@@ -21,7 +21,7 @@ public class DataCreator_Window : EditorWindow
     }
 
     [MenuItem("Game/Data creator")]
-    public static void OpenWindow()    
+    public static void OpenWindow()
     {
         var window = EditorWindow.GetWindow<DataCreator_Window>("Creator");
 
@@ -51,15 +51,15 @@ public class DataCreator_Window : EditorWindow
         GUI.Label(summaryRect, "Create the data that needs to be included into the XML file");
 
         #endregion
-    
+
         #region Body Section
 
-        Rect bodyRect = new Rect(15, (headerRect.y + headerRect.height) + 20, this.position.width -30, this.position.height - (headerRect.y + headerRect.height) -80);
+        Rect bodyRect = new Rect(15, (headerRect.y + headerRect.height) + 20, this.position.width - 30, this.position.height - (headerRect.y + headerRect.height) - 80);
         GUI.Box(bodyRect, GUIContent.none);
 
         var arraySize = data.Questions.Length;
 
-        Rect viewRect = new Rect(bodyRect.x +10, bodyRect.y +10, bodyRect.width -20, EditorGUI.GetPropertyHeight(questionsProp));
+        Rect viewRect = new Rect(bodyRect.x + 10, bodyRect.y + 10, bodyRect.width - 20, EditorGUI.GetPropertyHeight(questionsProp));
         Rect scrollPosRect = new Rect(viewRect)
         {
             height = bodyRect.height - 20
@@ -76,7 +76,7 @@ public class DataCreator_Window : EditorWindow
 
         GUI.EndScrollView();
         #endregion
-    
+
         #region Navigation
 
         Rect ButtonRect = new Rect(bodyRect.x + bodyRect.width - 85, bodyRect.height + 115, 85, 30);
@@ -85,6 +85,7 @@ public class DataCreator_Window : EditorWindow
         {
             if (string.IsNullOrEmpty(path))
             {
+                //TODO: change this
                 path = EditorUtility.SaveFilePanel("Save", "Assets", GameUtility.FileName, "xml");
             }
             Data.Write(data, path);

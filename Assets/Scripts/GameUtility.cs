@@ -12,7 +12,7 @@ public class GameUtility
     {
         get
         {
-            return Application.persistentDataPath + "/";
+            return Application.dataPath + "/";
         }
     }
 }
