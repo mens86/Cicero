@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 6c0e641a9a1a0b949ab186657a564c7e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - events: {instanceID: 0}
+  - answerPrefab: {fileID: 3487371901643285509, guid: cd08fc2c32dc20d419da027d5ea5dbd4, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
