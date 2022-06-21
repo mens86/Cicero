@@ -20,10 +20,10 @@ public class Question
 {
     public String Info = null;
     public Answer[] Answers = null;
-    public Boolean UseTimer = false;
-    public Int32 Timer = 0;
+    public bool UseTimer = false;
+    public int Timer = 0;
     public AnswerType Type = AnswerType.Single;
-    public Int32 AddScore = 0;
+    public int AddScore = 0;
 
     public Question() { }
 
