@@ -1,3 +1,4 @@
+/*
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -115,3 +116,4 @@ public class DataCreator_Window : EditorWindow
     }
 
 }
+*/

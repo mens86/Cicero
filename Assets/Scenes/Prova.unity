@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 154132956}
   - component: {fileID: 154132955}
+  - component: {fileID: 154132957}
   - component: {fileID: 154132954}
   m_Layer: 0
   m_Name: Managers
@@ -185,6 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 694668cfb7a24cb448df8fd52419ca52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  QuestionsFileName: lessico ragionato 2.0
   events: {fileID: 11400000, guid: 5f309094ecee4d043918ddbc3f048730, type: 2}
   timerAnimator: {fileID: 906002994}
   timerText: {fileID: 545037656}
@@ -205,6 +207,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &154132957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 154132953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98d2c187bd380f45a84be9785e41087, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &200891621
 GameObject:
   m_ObjectHideFlags: 0

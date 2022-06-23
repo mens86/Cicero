@@ -5,14 +5,9 @@ using System.Linq;
 
 public class ParserQuestions_csv : MonoBehaviour
 {
-    public string fileName;
+
     private char delimiter = ';';
 
-    [ContextMenu("test")]
-    public void Test()
-    {
-        ParseQuestionsFile(fileName);
-    }
 
     public List<Question> ParseQuestionsFile(string fileName)
     {
@@ -43,11 +38,21 @@ public class ParserQuestions_csv : MonoBehaviour
     private Question CreateQuestion(string currLine)
     {
         Question question = new Question();
-
         string[] cells = currLine.Split(delimiter);
-        question.Info = cells[1];
 
+        question.Info = cells[1];
         question.Answers = CreateAnswers(cells[6]).ToArray();
+        if (cells[8] == "sì")
+        {
+            question.UseTimer = true;
+        }
+        int timer = Convert.ToInt32(cells[9]);
+        question.Timer = timer;
+        int score = Convert.ToInt32(cells[10]);
+        question.AddScore = score;
+
+
+
         return question;
     }
 
@@ -61,6 +66,9 @@ public class ParserQuestions_csv : MonoBehaviour
             newAnswer.Info = currAnswer;
             newAnswer.IsCorrect = true;
             questionAnswers.Add(newAnswer);
+
+            //create the autocomplete list with all the answers
+            GameObject.Find("InputField").GetComponent<Autocomplete>().allAnswers.Add(currAnswer);
         }
         return questionAnswers;
     }
