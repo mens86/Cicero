@@ -59,7 +59,7 @@ public class ParserQuestions_csv : MonoBehaviour
     private List<Answer> CreateAnswers(string line)
     {
         List<Answer> questionAnswers = new List<Answer>();
-        string[] answers = line.Split(',');
+        string[] answers = line.Split('|');
         foreach (var currAnswer in answers)
         {
             Answer newAnswer = new Answer();

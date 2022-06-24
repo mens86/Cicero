@@ -88,6 +88,8 @@ public class UIManager : MonoBehaviour
     List<AnswerData> currentAnswers = new List<AnswerData>();
     private int resStateParaHash = 0;
 
+    public float ResolutionDelayTime = 1;
+
     private IEnumerator IE_DisplayTimedResolution;
 
     void OnEnable()
@@ -134,7 +136,7 @@ public class UIManager : MonoBehaviour
 
     IEnumerator DisplayTimedResolution()
     {
-        yield return new WaitForSeconds(GameUtility.ResolutionDelayTime);
+        yield return new WaitForSeconds(ResolutionDelayTime);
         uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 1);
         uIElements.MainCanvasGroup.blocksRaycasts = true;
     }
@@ -146,6 +148,7 @@ public class UIManager : MonoBehaviour
         switch (type)
         {
             case ResolutionScreenType.Correct:
+                ResolutionDelayTime = 1;
                 uIElements.ResolutionBG.color = parameters.CorrectBGColor;
                 uIElements.ResolutionStateInfoText.text = "CORRECT!";
                 uIElements.ResolutionScoreText.text = "+" + score;
@@ -153,6 +156,7 @@ public class UIManager : MonoBehaviour
 
 
             case ResolutionScreenType.Incorrect:
+                ResolutionDelayTime = 3;
                 uIElements.ResolutionBG.color = parameters.IncorrectBGColor;
 
                 var answersToCurrentQuestion = GameObject.Find("Managers").GetComponent<GameManager>().questions[GameObject.Find("Managers").GetComponent<GameManager>().currentQuestion].Answers;

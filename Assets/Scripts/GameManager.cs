@@ -253,7 +253,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator WaitTillNextRound()
     {
-        yield return new WaitForSeconds(GameUtility.ResolutionDelayTime);
+        yield return new WaitForSeconds(GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime);
         Display();
     }
 
