@@ -10,15 +10,15 @@ public struct UIManagerParameters
 {
     [Header("Answers Options")]
     [SerializeField] float margins;
-    public float Margins {get {return margins; } }
+    public float Margins { get { return margins; } }
 
     [Header("Resolution Screen Options")]
     [SerializeField] Color correctBGColor;
-    public Color CorrectBGColor  {get {return correctBGColor; } }
+    public Color CorrectBGColor { get { return correctBGColor; } }
     [SerializeField] Color incorrectBGColor;
-    public Color IncorrectBGColor  {get {return incorrectBGColor; } }
+    public Color IncorrectBGColor { get { return incorrectBGColor; } }
     [SerializeField] Color finalBGColor;
-    public Color FinalBGColor  {get {return finalBGColor; } }
+    public Color FinalBGColor { get { return finalBGColor; } }
 }
 
 
@@ -27,7 +27,7 @@ public struct UIElements
 {
     [SerializeField] RectTransform pickedanswersContentArea;
     public RectTransform PickedAnswersContentArea { get { return pickedanswersContentArea; } }
-    
+
     [SerializeField] RectTransform answersContentArea;
     public RectTransform AnswersContentArea { get { return answersContentArea; } }
 
@@ -109,7 +109,7 @@ public class UIManager : MonoBehaviour
         resStateParaHash = Animator.StringToHash("ScreenState");
     }
 
-    void UpdateQuestionUI (Question question)
+    void UpdateQuestionUI(Question question)
     {
         uIElements.QuestionInfoTextObject.text = question.Info;
         CreateAnswers(question);
@@ -132,7 +132,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    IEnumerator DisplayTimedResolution ()
+    IEnumerator DisplayTimedResolution()
     {
         yield return new WaitForSeconds(GameUtility.ResolutionDelayTime);
         uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 1);
@@ -142,7 +142,7 @@ public class UIManager : MonoBehaviour
     void UpdateResUI(ResolutionScreenType type, int score)
     {
         var highscore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
-        
+
         switch (type)
         {
             case ResolutionScreenType.Correct:
@@ -150,26 +150,37 @@ public class UIManager : MonoBehaviour
                 uIElements.ResolutionStateInfoText.text = "CORRECT!";
                 uIElements.ResolutionScoreText.text = "+" + score;
                 break;
+
+
             case ResolutionScreenType.Incorrect:
                 uIElements.ResolutionBG.color = parameters.IncorrectBGColor;
-                uIElements.ResolutionStateInfoText.text = "WRONG!";
+
+                var answersToCurrentQuestion = GameObject.Find("Managers").GetComponent<GameManager>().questions[GameObject.Find("Managers").GetComponent<GameManager>().currentQuestion].Answers;
+                string CorrectAnswers = "";
+                foreach (var a in answersToCurrentQuestion)
+                {
+                    CorrectAnswers += "\n" + a.Info;
+                }
+                uIElements.ResolutionStateInfoText.text = "WRONG! \n The correct answer was: \n\n" + CorrectAnswers;
                 uIElements.ResolutionScoreText.text = "-" + score;
                 break;
+
+
             case ResolutionScreenType.Finish:
                 uIElements.ResolutionBG.color = parameters.FinalBGColor;
                 uIElements.ResolutionStateInfoText.text = "FINAL SCORE";
-                
+
                 StartCoroutine(CalculateScore());
                 uIElements.FinishUIElements.gameObject.SetActive(true);
                 uIElements.HighScoreText.gameObject.SetActive(true);
-                uIElements.HighScoreText.text =  ((highscore > events.StartupHighScore ? "<color=yellow>new </color>" : string.Empty) + "Highscore " + highscore);
+                uIElements.HighScoreText.text = ((highscore > events.StartupHighScore ? "<color=yellow>new </color>" : string.Empty) + "Highscore " + highscore);
                 break;
         }
     }
 
     IEnumerator CalculateScore()
     {
-        if (events.CurrentFinalScore == 0) { uIElements.ResolutionScoreText.text = 0.ToString(); yield break;}
+        if (events.CurrentFinalScore == 0) { uIElements.ResolutionScoreText.text = 0.ToString(); yield break; }
 
         var scoreValue = 0;
         var scoreMoreThanZero = events.CurrentFinalScore > 0;
@@ -182,10 +193,10 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    void CreateAnswers (Question question)
+    void CreateAnswers(Question question)
     {
-        EraseAnswers ();
-        
+        EraseAnswers();
+
 
         float offset = 0 - parameters.Margins;
         for (int i = 0; i < question.Answers.Length; i++)
@@ -199,22 +210,22 @@ public class UIManager : MonoBehaviour
             uIElements.AnswersContentArea.sizeDelta = new Vector2(uIElements.AnswersContentArea.sizeDelta.x, offset * -1);
 
             currentAnswers.Add(newAnswer);
-        } 
+        }
     }
 
-    void EraseAnswers ()
+    void EraseAnswers()
     {
         foreach (var answer in currentAnswers)
         {
             Destroy(answer.gameObject);
         }
         currentAnswers.Clear();
-        
+
     }
 
-    void UpdateScoreUI ()
+    void UpdateScoreUI()
     {
-        uIElements.ScoreText.text = "Score: " + events.CurrentFinalScore;    
+        uIElements.ScoreText.text = "Score: " + events.CurrentFinalScore;
     }
 
 
@@ -223,7 +234,7 @@ public class UIManager : MonoBehaviour
 
 
 
-    public void ShowPickedAnswers( List<AnswerData> picked)
+    public void ShowPickedAnswers(List<AnswerData> picked)
     {
         //foreach (var i in picked){Debug.Log(i.infoTextObject.text.ToString());}
         //Debug.Log("--------");
@@ -231,12 +242,12 @@ public class UIManager : MonoBehaviour
         float offset = 0 - parameters.Margins;
 
         ErasePickedAnswers(picked);
-        
+
         for (int i = 0; i < picked.Count; i++)
         {
             AnswerData newAnswer = (AnswerData)Instantiate(pickedAnswerPrefab, uIElements.PickedAnswersContentArea);
             newAnswer.UpdateData(picked[i].infoTextObject.text.ToString(), i);
-        
+
             newAnswer.Rect.anchoredPosition = new Vector2(0, offset);
 
             offset -= (newAnswer.Rect.sizeDelta.y + parameters.Margins);
@@ -246,11 +257,12 @@ public class UIManager : MonoBehaviour
 
     public void ErasePickedAnswers(List<AnswerData> picked)
     {
-        var clones = GameObject.FindGameObjectsWithTag ("PickedAnswer");
-        foreach (var clone in clones){
+        var clones = GameObject.FindGameObjectsWithTag("PickedAnswer");
+        foreach (var clone in clones)
+        {
             //Debug.Log("vediamo un p0'");
-        Destroy(clone);        
-        }        
+            Destroy(clone);
+        }
     }
-    
+
 }

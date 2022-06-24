@@ -186,6 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 694668cfb7a24cb448df8fd52419ca52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  questions: []
   QuestionsFileName: lessico ragionato 2.0
   events: {fileID: 11400000, guid: 5f309094ecee4d043918ddbc3f048730, type: 2}
   timerAnimator: {fileID: 906002994}
@@ -193,6 +194,7 @@ MonoBehaviour:
   timerHalfWayOutColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   timerAlmostOutColor: {r: 1, g: 0, b: 0, a: 1}
   PickedAnswers: []
+  currentQuestion: 0
 --- !u!4 &154132956
 Transform:
   m_ObjectHideFlags: 0
@@ -938,6 +940,7 @@ MonoBehaviour:
   inputField: {fileID: 429423103}
   resultsParent: {fileID: 404339250}
   prefab: {fileID: 1673317224429184889, guid: bf3bac54f0086174198d8ebea64af155, type: 3}
+  allAnswers: []
 --- !u!114 &429423107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2312,7 +2315,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 150}
   m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1166328904

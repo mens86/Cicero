@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     #region Variables
 
     //private Data data = new Data();
-    private List<Question> questions;
+    public List<Question> questions;
     public string QuestionsFileName;
 
     [SerializeField] GameEvents events = null;
@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
 
     public List<AnswerData> PickedAnswers = new List<AnswerData>();
     private List<int> FinishedQuestions = new List<int>();
-    private int currentQuestion = 0;
+    public int currentQuestion = 0;
 
     private int timerStateParaHash = 0;
 
