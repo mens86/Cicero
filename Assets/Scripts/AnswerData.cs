@@ -22,7 +22,7 @@ public class AnswerData : MonoBehaviour
     {
         get
         {
-            if(_rect == null)
+            if (_rect == null)
             {
                 _rect = GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
             }
@@ -38,23 +38,23 @@ public class AnswerData : MonoBehaviour
 
 
 
-    public void UpdateData (string info, int index)
+    public void UpdateData(string info, int index)
     {
         infoTextObject.text = info;
         _answerIndex = index;
     }
 
-    public void Reset ()
+    public void Reset()
     {
         Checked = false;
         UPdateUI();
     }
 
-    public void SwitchState ()
+    public void SwitchState()
     {
         Checked = !Checked;
         UPdateUI();
-        
+
 
         if (events.updateQuestionAnswer != null)
         {
@@ -62,14 +62,10 @@ public class AnswerData : MonoBehaviour
         }
 
     }
-    void UPdateUI ()
+    void UPdateUI()
     {
-        //if (toggle != null)
-        //{
-            toggle.sprite = (Checked) ? checkedToggle : uncheckedToggle;
-        //}
-        
+        toggle.sprite = (Checked) ? checkedToggle : uncheckedToggle;
     }
 
-    
+
 }

@@ -165,14 +165,14 @@ public class UIManager : MonoBehaviour
                 {
                     CorrectAnswers += "\n" + a.Info;
                 }
-                uIElements.ResolutionStateInfoText.text = "WRONG! \n The correct answer was: \n\n" + CorrectAnswers;
+                uIElements.ResolutionStateInfoText.text = "WRONG! \nThe correct answer was: \n\n" + CorrectAnswers;
                 uIElements.ResolutionScoreText.text = "-" + score;
                 break;
 
 
             case ResolutionScreenType.Finish:
                 uIElements.ResolutionBG.color = parameters.FinalBGColor;
-                uIElements.ResolutionStateInfoText.text = "FINAL SCORE";
+                uIElements.ResolutionStateInfoText.text = "\n\n\n\n\n\n\nGAME OVER! \n\n\n\nFINAL SCORE";
 
                 StartCoroutine(CalculateScore());
                 uIElements.FinishUIElements.gameObject.SetActive(true);

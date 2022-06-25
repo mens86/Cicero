@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine.UI;
 using System.Linq;
 
@@ -8,12 +9,11 @@ public class KeybManager : MonoBehaviour
 {
     public static KeybManager Instance;
     [SerializeField] TMP_InputField textBox;
-    //[SerializeField] TextMeshProUGUI printBox;
+
 
     private void Start()
     {
         Instance = this;
-        //printBox.text = "";
         textBox.text = "";
     }
 
@@ -28,16 +28,23 @@ public class KeybManager : MonoBehaviour
     public void AddLetter(string letter)
     {
         textBox.text = textBox.text + letter;
+
+        //tutta sta merda, corutine compresa, solo per avere il caret alla fine!
+        textBox.ActivateInputField();
+        textBox.Select();
+        StartCoroutine(MoveTextEnd_NextFrame());
     }
+
+    IEnumerator MoveTextEnd_NextFrame()
+    {
+        yield return 0;
+        textBox.MoveTextEnd(false);
+    }
+
+
 
     public void SubmitWord()
     {
-        //printBox.text = textBox.text;
-        //textBox.text = "";
-        // Debug.Log("Text submitted successfully!");
-
-
-
         List<string> res = GameObject.Find("InputField").GetComponent<Autocomplete>().GetResults(textBox.text);
 
         if (res.Count() != 0)
@@ -46,15 +53,16 @@ public class KeybManager : MonoBehaviour
             {
                 textBox.text = res[0];
                 textBox.ActivateInputField();
+                GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.ActivateInputField();
             }
+
             else
             {
                 GameObject.Find("InputField").GetComponent<Autocomplete>().firstButton.GetComponent<Button>().onClick.Invoke();
                 //inputField.text = "";
                 textBox.ActivateInputField();
-
             }
-        }
 
+        }
     }
 }

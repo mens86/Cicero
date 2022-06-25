@@ -138,6 +138,7 @@ public class GameManager : MonoBehaviour
     {
         GameObject.Find("Managers").GetComponent<UIManager>().ErasePickedAnswers(PickedAnswers);
         EraseAnswers();
+        GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
         var question = GetRandomQuestion();
 
         if (events.UpdateQuestionUI != null)
