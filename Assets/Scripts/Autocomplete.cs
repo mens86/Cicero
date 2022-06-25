@@ -6,15 +6,15 @@ using TMPro;
 
 public class Autocomplete : MonoBehaviour
 {
-    public InputField inputField;
+    public TMP_InputField inputField;
     public RectTransform resultsParent;
     public RectTransform prefab;
     public List<string> allAnswers;
 
 
 
-    RectTransform firstButton;
-    string currentTextInInputField = "   ";
+    public RectTransform firstButton;
+    public string currentTextInInputField = "   ";
 
 
 
@@ -27,7 +27,7 @@ public class Autocomplete : MonoBehaviour
 
     }
 
-
+    //questo update è cancellabile: serve solo ad usare la tastiera pc in fase di testing
     void Update()
     {
         if (Input.GetKeyUp(KeyCode.Return))
@@ -51,6 +51,7 @@ public class Autocomplete : MonoBehaviour
             }
         }
     }
+    ///////////////////////////////////////////////////////////////////////////////////////
 
 
     private void OnInputValueChanged(string newText)
@@ -111,7 +112,7 @@ public class Autocomplete : MonoBehaviour
     }
 
 
-    private List<string> GetResults(string input)
+    public List<string> GetResults(string input)
     {
 
 
