@@ -23,7 +23,7 @@ public class Autocomplete : MonoBehaviour
     {
         inputField.ActivateInputField();
         inputField.onValueChanged.AddListener(OnInputValueChanged);
-        allAnswers.Sort(); //non so se lo sorta in Awake, ma intendo pormi questo problema più avanti
+        allAnswers.Sort();
 
     }
 

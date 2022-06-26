@@ -21,6 +21,7 @@ public class KeybManager : MonoBehaviour
     {
         if (textBox.text.Length != 0)
         {
+            GameObject.Find("DeletedLetter").GetComponent<Text>().text = textBox.text.Substring(textBox.text.Length - 1);
             textBox.text = textBox.text.Remove(textBox.text.Length - 1, 1);
         }
     }
@@ -29,9 +30,9 @@ public class KeybManager : MonoBehaviour
     {
         textBox.text = textBox.text + letter;
 
-        //tutta sta merda, corutine compresa, solo per avere il caret alla fine!
+        //sta merda, corutine compresa, sarebbe solo per avere il caret alla fine (se solo andasse su android). A
+        //Anzi, stando così le cose, serve a far scorrere il testo oltre quando arrivi alla fine dell'inputfield
         textBox.ActivateInputField();
-        textBox.Select();
         StartCoroutine(MoveTextEnd_NextFrame());
     }
 

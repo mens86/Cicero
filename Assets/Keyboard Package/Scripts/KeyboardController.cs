@@ -24,10 +24,11 @@ public class KeyboardController : MonoBehaviour
 
     private bool isSmallLettersShown = true;
 
-    public void ShowCapitalLetters() {
+    public void ShowCapitalLetters()
+    {
         isSmallLettersShown = false;
 
-        actionNumbers.SetActive(true);
+        //actionNumbers.SetActive(true);
         actionSmallLetters.SetActive(false);
         actionCapitalLetters.SetActive(false);
 
@@ -45,11 +46,12 @@ public class KeyboardController : MonoBehaviour
         splChars1.SetActive(false);
         splChars2.SetActive(false);
     }
-    
-    public void ShowSmallLetters() {
+
+    public void ShowSmallLetters()
+    {
         isSmallLettersShown = true;
 
-        actionNumbers.SetActive(true);
+        //actionNumbers.SetActive(true);
         actionSmallLetters.SetActive(false);
         actionCapitalLetters.SetActive(false);
 
@@ -68,13 +70,17 @@ public class KeyboardController : MonoBehaviour
         splChars2.SetActive(false);
     }
 
-    public void ShowSpecialCharsNum() {
-        actionNumbers.SetActive(false);
+    public void ShowSpecialCharsNum()
+    {
+        //actionNumbers.SetActive(false);
 
-        if(isSmallLettersShown) {
+        if (isSmallLettersShown)
+        {
             actionSmallLetters.SetActive(true);
             actionCapitalLetters.SetActive(false);
-        } else {
+        }
+        else
+        {
             actionSmallLetters.SetActive(false);
             actionCapitalLetters.SetActive(true);
         }
@@ -95,13 +101,17 @@ public class KeyboardController : MonoBehaviour
         splChars2.SetActive(false);
     }
 
-    public void ShowSpecialChars() {
-        actionNumbers.SetActive(false);
+    public void ShowSpecialChars()
+    {
+        //actionNumbers.SetActive(false);
 
-        if(isSmallLettersShown) {
+        if (isSmallLettersShown)
+        {
             actionSmallLetters.SetActive(true);
             actionCapitalLetters.SetActive(false);
-        } else {
+        }
+        else
+        {
             actionSmallLetters.SetActive(false);
             actionCapitalLetters.SetActive(true);
         }
