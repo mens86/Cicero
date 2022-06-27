@@ -111,7 +111,6 @@ public class UIManager : MonoBehaviour
     {
         UpdateScoreUI();
         resStateParaHash = Animator.StringToHash("ScreenState");
-        ShowDecks();
     }
 
     void UpdateQuestionUI(Question question)
@@ -273,15 +272,17 @@ public class UIManager : MonoBehaviour
     }
 
 
-    public void ShowDecks()
+    public List<string> ShowDecks()
     {
+        List<string> csvDecks = new List<string>();
 
         DirectoryInfo di = new DirectoryInfo("Assets/Resources");
         FileInfo[] smFiles = di.GetFiles("*.csv");
         foreach (FileInfo fi in smFiles)
         {
-            Debug.Log(Path.GetFileNameWithoutExtension(fi.Name));
+            csvDecks.Add(Path.GetFileNameWithoutExtension(fi.Name));
         }
+        return csvDecks;
     }
 
 
