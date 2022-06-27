@@ -133,15 +133,33 @@ public class CustomCaret : MonoBehaviour
                 //Set xAdv to the distance specified by the font, according to the new character entered.
                 //fontSpacing is an approximation to the distance difference between TMPro fonts and regular fonts.
                 //The 5.3 value may not work for all fonts, and should be tweaked accordingly.
-#if UNITY_2018
-                    xAdv = tmpFont.characterDictionary[Input.inputString[0]].xAdvance / fontSpacing;
-#else
                 char goingBack = deletedLetter.text.Substring(deletedLetter.text.Length - 1)[0];
                 xAdv = tmpFont.characterLookupTable[goingBack].glyph.metrics.horizontalAdvance / fontSpacing;
 
-#endif
-                //Move the caret's position to the left xAdv distance.
-                rect.anchoredPosition = new Vector2(rect.anchoredPosition.x - xAdv, rect.anchoredPosition.y);
+                float difference = inputText.rectTransform.anchoredPosition.x;
+                if (inputText.rectTransform.anchoredPosition.x == 0)
+                {
+                    rect.anchoredPosition = new Vector2(rect.anchoredPosition.x - xAdv, rect.anchoredPosition.y);
+                    inputText.rectTransform.anchoredPosition = new Vector2(0, inputText.rectTransform.anchoredPosition.y);
+                }
+                if (inputText.rectTransform.anchoredPosition.x < 0)
+                {
+                    rect.anchoredPosition = new Vector2(558, rect.anchoredPosition.y);
+                    inputText.rectTransform.anchoredPosition = new Vector2(inputText.rectTransform.anchoredPosition.x + xAdv, inputText.rectTransform.anchoredPosition.y);
+                }
+                if (inputText.rectTransform.anchoredPosition.x > 0)
+                {
+                    rect.anchoredPosition = new Vector2(rect.anchoredPosition.x - xAdv - difference, rect.anchoredPosition.y);
+                    inputText.rectTransform.anchoredPosition = new Vector2(0, inputText.rectTransform.anchoredPosition.y);
+                }
+
+
+
+
+
+
+
+
 
             }
 
@@ -189,7 +207,7 @@ public class CustomCaret : MonoBehaviour
             rect.anchoredPosition = new Vector2(558, rect.anchoredPosition.y);
         }
 
-        //If the user presses a key that inputs a character, and the limit has not been reached,
+        //If the user presses a key that inputs a character, and the limit has not been reached, and that key is not backspace
         //then attempt to move the caret to the right.
         else if (inputField.text.Length > 0 && !(inputText.textInfo.characterCount >= inputField.characterLimit + 1) && !WasBackSpaceUsed)
         {
@@ -199,13 +217,8 @@ public class CustomCaret : MonoBehaviour
                 //Set xAdv to the distance specified by the font, according to the new character entered.
                 //fontSpacing is an approximation to the distance difference between TMPro fonts and regular fonts.
                 //The 5.3 value may not work for all fonts, and should be tweaked accordingly.
-#if UNITY_2018
-                        xAdv = tmpFont.characterDictionary[Input.inputString[0]].xAdvance / fontSpacing;
-
-#else
                 currChar = inputField.text.Substring(inputField.text.Length - 1)[0];
                 xAdv = tmpFont.characterLookupTable[currChar].glyph.metrics.horizontalAdvance / fontSpacing;
-#endif
 
                 //Move the caret's position to the right xAdv distance.
                 rect.anchoredPosition = new Vector2(rect.anchoredPosition.x + xAdv, rect.anchoredPosition.y);

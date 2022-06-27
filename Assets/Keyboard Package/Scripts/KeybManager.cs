@@ -28,11 +28,14 @@ public class KeybManager : MonoBehaviour
 
     public void AddLetter(string letter)
     {
+
         textBox.text = textBox.text + letter;
 
-        //sta merda, corutine compresa, sarebbe solo per avere il caret alla fine (se solo andasse su android). A
+        //sta merda, corutine compresa, sarebbe solo per avere il caret alla fine (se solo andasse su android).
         //Anzi, stando così le cose, serve a far scorrere il testo oltre quando arrivi alla fine dell'inputfield
         textBox.ActivateInputField();
+        textBox.Select();
+        textBox.MoveTextEnd(false);
         StartCoroutine(MoveTextEnd_NextFrame());
     }
 
