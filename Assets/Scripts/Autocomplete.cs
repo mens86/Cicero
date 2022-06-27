@@ -27,31 +27,6 @@ public class Autocomplete : MonoBehaviour
 
     }
 
-    //questo update è cancellabile: serve solo ad usare la tastiera pc in fase di testing
-    void Update()
-    {
-        if (Input.GetKeyUp(KeyCode.Return))
-        {
-
-            List<string> res = GetResults(currentTextInInputField);
-            if (res.Count() != 0)
-            {
-                if (inputField.text != res[0])
-                {
-                    inputField.text = res[0];
-                    inputField.ActivateInputField();
-                }
-                else
-                {
-                    firstButton.GetComponent<Button>().onClick.Invoke();
-                    //inputField.text = "";
-                    inputField.ActivateInputField();
-
-                }
-            }
-        }
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////
 
 
     private void OnInputValueChanged(string newText)

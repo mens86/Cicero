@@ -30,9 +30,6 @@ public struct UIElements
     [SerializeField] RectTransform pickedanswersContentArea;
     public RectTransform PickedAnswersContentArea { get { return pickedanswersContentArea; } }
 
-    [SerializeField] RectTransform answersContentArea;
-    public RectTransform AnswersContentArea { get { return answersContentArea; } }
-
     [SerializeField] TextMeshProUGUI questionInfoTextObject;
     public TextMeshProUGUI QuestionInfoTextObject { get { return questionInfoTextObject; } }
 
@@ -77,9 +74,8 @@ public class UIManager : MonoBehaviour
 
     [Header("UI Elements (Prefabs)")]
 
-    [SerializeField] AnswerData pickedAnswerPrefab;
-
     [SerializeField] AnswerData answerPrefab;
+    [SerializeField] AnswerData pickedAnswerPrefab;
 
     [SerializeField] UIElements uIElements;
 
@@ -202,19 +198,10 @@ public class UIManager : MonoBehaviour
     void CreateAnswers(Question question)
     {
         EraseAnswers();
-
-
-        float offset = 0 - parameters.Margins;
         for (int i = 0; i < question.Answers.Length; i++)
         {
-            AnswerData newAnswer = (AnswerData)Instantiate(answerPrefab, uIElements.AnswersContentArea);
+            AnswerData newAnswer = (AnswerData)Instantiate(answerPrefab);
             newAnswer.UpdateData(question.Answers[i].Info, i);
-
-            newAnswer.Rect.anchoredPosition = new Vector2(0, offset);
-
-            offset -= (newAnswer.Rect.sizeDelta.y + parameters.Margins);
-            uIElements.AnswersContentArea.sizeDelta = new Vector2(uIElements.AnswersContentArea.sizeDelta.x, offset * -1);
-
             currentAnswers.Add(newAnswer);
         }
     }
@@ -233,9 +220,6 @@ public class UIManager : MonoBehaviour
     {
         uIElements.ScoreText.text = "Score: " + events.CurrentFinalScore;
     }
-
-
-
 
 
 
