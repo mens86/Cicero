@@ -9,27 +9,29 @@ public class ParserQuestions_csv : MonoBehaviour
     private char delimiter = ';';
 
 
-    public List<Question> ParseQuestionsFile(string fileName)
+    public List<Question> ParseQuestionsFile(List<string> fileName)
     {
         List<Question> result = new List<Question>();
-
-        TextAsset txt = (TextAsset)Resources.Load(fileName, typeof(TextAsset));
-        Debug.Assert(txt != null, "Il file csv deve essere messo nella cartella Assets/Resources. Il nome del file non deve includere l'estensione");
-
-        string filecontent = txt.text;
-        filecontent = filecontent.Replace("\r", "");
-
-        string[] lines = filecontent.Split('\n');
-        foreach (var currLine in lines)
+        for (int i = 0; i < fileName.Count; i++)
         {
-            bool isEmptyLine = currLine.Replace(";", "").Length == 0;
-            if (isEmptyLine)
-            {
-                continue;
-            }
+            TextAsset txt = (TextAsset)Resources.Load(fileName[i], typeof(TextAsset));
+            Debug.Assert(txt != null, "Il file csv deve essere messo nella cartella Assets/Resources. Il nome del file non deve includere l'estensione");
 
-            var newQuestion = CreateQuestion(currLine);
-            result.Add(newQuestion);
+            string filecontent = txt.text;
+            filecontent = filecontent.Replace("\r", "");
+
+            string[] lines = filecontent.Split('\n');
+            foreach (var currLine in lines)
+            {
+                bool isEmptyLine = currLine.Replace(";", "").Length == 0;
+                if (isEmptyLine)
+                {
+                    continue;
+                }
+
+                var newQuestion = CreateQuestion(currLine);
+                result.Add(newQuestion);
+            }
         }
 
         return result;

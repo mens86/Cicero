@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.IO;
 using TMPro;
+
 
 [Serializable()]
 public struct UIManagerParameters
@@ -109,6 +111,7 @@ public class UIManager : MonoBehaviour
     {
         UpdateScoreUI();
         resStateParaHash = Animator.StringToHash("ScreenState");
+        ShowDecks();
     }
 
     void UpdateQuestionUI(Question question)
@@ -268,5 +271,24 @@ public class UIManager : MonoBehaviour
             Destroy(clone);
         }
     }
+
+
+    public void ShowDecks()
+    {
+
+        DirectoryInfo di = new DirectoryInfo("Assets/Resources");
+        FileInfo[] smFiles = di.GetFiles("*.csv");
+        foreach (FileInfo fi in smFiles)
+        {
+            Debug.Log(Path.GetFileNameWithoutExtension(fi.Name));
+        }
+    }
+
+
+
+
+
+
+
 
 }

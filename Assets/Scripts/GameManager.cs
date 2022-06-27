@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     //private Data data = new Data();
     public List<Question> questions;
-    public string QuestionsFileName;
+    public List<string> QuestionsFileNames;
 
     [SerializeField] GameEvents events = null;
 
@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         events.CurrentFinalScore = 0;
-        questions = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileName);
+        questions = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileNames);
     }
 
     void Start()

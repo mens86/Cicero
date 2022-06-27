@@ -135,7 +135,7 @@ public class CustomCaret : MonoBehaviour
                 //The 5.3 value may not work for all fonts, and should be tweaked accordingly.
                 char goingBack = deletedLetter.text.Substring(deletedLetter.text.Length - 1)[0];
                 xAdv = tmpFont.characterLookupTable[goingBack].glyph.metrics.horizontalAdvance / fontSpacing;
-
+                RectTransform rt = (RectTransform)inputField.transform;
                 float difference = inputText.rectTransform.anchoredPosition.x;
                 if (inputText.rectTransform.anchoredPosition.x == 0)
                 {
@@ -144,7 +144,7 @@ public class CustomCaret : MonoBehaviour
                 }
                 if (inputText.rectTransform.anchoredPosition.x < 0)
                 {
-                    rect.anchoredPosition = new Vector2(558, rect.anchoredPosition.y);
+                    rect.anchoredPosition = new Vector2(rt.rect.width - 42, rect.anchoredPosition.y);
                     inputText.rectTransform.anchoredPosition = new Vector2(inputText.rectTransform.anchoredPosition.x + xAdv, inputText.rectTransform.anchoredPosition.y);
                 }
                 if (inputText.rectTransform.anchoredPosition.x > 0)
@@ -200,11 +200,11 @@ public class CustomCaret : MonoBehaviour
         }
 
 
-
+        RectTransform rt = (RectTransform)inputField.transform;
         //If the character count is greater than the max & input is not backspace, then return.
-        if (rect.anchoredPosition.x > 500 && !WasBackSpaceUsed)
+        if (rect.anchoredPosition.x > rt.rect.width - 100 && !WasBackSpaceUsed)
         {
-            rect.anchoredPosition = new Vector2(558, rect.anchoredPosition.y);
+            rect.anchoredPosition = new Vector2(rt.rect.width - 42, rect.anchoredPosition.y);
         }
 
         //If the user presses a key that inputs a character, and the limit has not been reached, and that key is not backspace
