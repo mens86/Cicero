@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using System.IO;
 using TMPro;
 
 
@@ -27,6 +26,9 @@ public struct UIManagerParameters
 [Serializable()]
 public struct UIElements
 {
+
+
+
     [SerializeField] RectTransform pickedanswersContentArea;
     public RectTransform PickedAnswersContentArea { get { return pickedanswersContentArea; } }
 
@@ -255,19 +257,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-
-    public List<string> ShowDecks()
-    {
-        List<string> csvDecks = new List<string>();
-
-        DirectoryInfo di = new DirectoryInfo("Assets/Resources");
-        FileInfo[] smFiles = di.GetFiles("*.csv");
-        foreach (FileInfo fi in smFiles)
-        {
-            csvDecks.Add(Path.GetFileNameWithoutExtension(fi.Name));
-        }
-        return csvDecks;
-    }
 
 
 
