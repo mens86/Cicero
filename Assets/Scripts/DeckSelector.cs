@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using TMPro;
+using UnityEngine.Networking;
+
 
 public class DeckSelector : MonoBehaviour
 {
@@ -10,9 +12,13 @@ public class DeckSelector : MonoBehaviour
     [SerializeField] AnswerData deckSelectPrefab;
     [SerializeField] RectTransform decksContentArea;
     public RectTransform DecksContentArea { get { return decksContentArea; } }
+    [SerializeField] TextMeshProUGUI Title = null;
 
+    [SerializeField] GameObject MenuCanvas = null;
+    [SerializeField] GameObject GameCanvas = null;
+    [SerializeField] GameObject Managers = null;
     [SerializeField] GameEvents events = null;
-    [SerializeField] GameManager GameManager = null;
+
     public List<AnswerData> PickedDecks = new List<AnswerData>();
 
 
@@ -54,28 +60,60 @@ public class DeckSelector : MonoBehaviour
     {
         List<string> csvDecks = new List<string>();
 
+
+
+        //codice per farlo funzionare su mobile
+        string path = "jar:file://" + Application.dataPath + "!/assets/alphabet.txt";
+        UnityWebRequest wwwfile = UnityWebRequest.Get(path);
+        wwwfile.SendWebRequest();
+        while (!wwwfile.isDone) { }
+        var filepath = string.Format("{0}/{1}", Application.persistentDataPath, "alphabet.t");
+        File.WriteAllBytes(filepath, wwwfile.downloadHandler.data);
+
+        StreamReader wr = new StreamReader(filepath);
+        string line;
+        while ((line = wr.ReadLine()) != null)
+        {
+            csvDecks.Add(line);
+        }
+
+
+        //codice per farlo funzionare nell'editor
+        /*
         DirectoryInfo di = new DirectoryInfo("Assets/Resources");
         FileInfo[] smFiles = di.GetFiles("*.csv");
         foreach (FileInfo fi in smFiles)
         {
             csvDecks.Add(Path.GetFileNameWithoutExtension(fi.Name));
         }
+        */
+
+
         return csvDecks;
+
     }
 
 
     public void StartGame()
     {
-
-
         List<string> ListOfDecks = new List<string>();
         for (int i = 0; i < PickedDecks.Count; i++)
         {
             ListOfDecks.Add(PickedDecks[i].infoTextObject.text);
         }
-        GameManager.QuestionsFileNames = ListOfDecks;
+        Managers.GetComponent<GameManager>().QuestionsFileNames = ListOfDecks;
 
-        //attivare il gioco
+        if (ListOfDecks.Count != 0)
+        {
+            MenuCanvas.SetActive(false);
+            GameCanvas.SetActive(true);
+            Managers.SetActive(true);
+        }
+        else
+        {
+            Title.text = "I've told you to choose a study mix!";
+        }
+
     }
 
 
