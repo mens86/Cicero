@@ -9,12 +9,13 @@ public class ParserQuestions_csv : MonoBehaviour
     private char delimiter = ';';
 
 
-    public List<Question> ParseQuestionsFile(List<string> fileName)
+    //TODO: this gets a list of string, where the arg is the actual file content, not the file name
+    public List<Question> ParseQuestionsFile(List<TextAsset> decks_textAssets)
     {
         List<Question> result = new List<Question>();
-        for (int i = 0; i < fileName.Count; i++)
+        for (int i = 0; i < decks_textAssets.Count; i++)
         {
-            TextAsset txt = (TextAsset)Resources.Load(fileName[i], typeof(TextAsset));
+            TextAsset txt = decks_textAssets[i];
             Debug.Assert(txt != null, "Il file csv deve essere messo nella cartella Assets/Resources. Il nome del file non deve includere l'estensione");
 
             string filecontent = txt.text;

@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     //private Data data = new Data();
     public List<Question> questions;
-    public List<string> QuestionsFileNames;
+    public List<TextAsset> QuestionsFileNames;
 
     [SerializeField] GameEvents events = null;
 
@@ -73,58 +73,38 @@ public class GameManager : MonoBehaviour
 
     public void UpdateAnswers(AnswerData newAnswer)
     {
-        /*
-        if (data.Questions[currentQuestion].Type == AnswerType.Single)
+        bool alreadyPicked = false;
+        for (int i = 0; i < PickedAnswers.Count; i++)
         {
-            
-            foreach (var answer in PickedAnswers)
+            if (PickedAnswers[i].infoTextObject.text.Contains(newAnswer.infoTextObject.text))
             {
-                if (answer != newAnswer)
-                {
-                    answer.Reset();
-                }
+                alreadyPicked = true;
             }
-            
-            PickedAnswers.Clear();
-            PickedAnswers.Add(newAnswer);
-            GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
-            GameObject.Find("Managers").GetComponent<UIManager>().ShowPickedAnswers(PickedAnswers);
         }
-        else
-        */
+
+        if (alreadyPicked)
         {
-            bool alreadyPicked = false;
+
+            int indexToRemove = -1;
             for (int i = 0; i < PickedAnswers.Count; i++)
             {
                 if (PickedAnswers[i].infoTextObject.text.Contains(newAnswer.infoTextObject.text))
                 {
-                    alreadyPicked = true;
+                    indexToRemove = i;
                 }
             }
+            PickedAnswers.RemoveAt(indexToRemove);
 
-            if (alreadyPicked)
-            {
-
-                int indexToRemove = -1;
-                for (int i = 0; i < PickedAnswers.Count; i++)
-                {
-                    if (PickedAnswers[i].infoTextObject.text.Contains(newAnswer.infoTextObject.text))
-                    {
-                        indexToRemove = i;
-                    }
-                }
-                PickedAnswers.RemoveAt(indexToRemove);
-
-                GameObject.Find("Managers").GetComponent<UIManager>().ShowPickedAnswers(PickedAnswers);
-            }
-
-            else
-            {
-                PickedAnswers.Add(newAnswer);
-                GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
-                GameObject.Find("Managers").GetComponent<UIManager>().ShowPickedAnswers(PickedAnswers);
-            }
+            GameObject.Find("Managers").GetComponent<UIManager>().ShowPickedAnswers(PickedAnswers);
         }
+
+        else
+        {
+            PickedAnswers.Add(newAnswer);
+            GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
+            GameObject.Find("Managers").GetComponent<UIManager>().ShowPickedAnswers(PickedAnswers);
+        }
+
     }
 
 

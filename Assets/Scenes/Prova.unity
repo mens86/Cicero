@@ -4735,6 +4735,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 971140f8d61834046b476408bf9c54b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  availableDecks:
+  - {fileID: 4900000, guid: a966188006d8c8e4eb873b9f58ceb9c0, type: 3}
+  - {fileID: 4900000, guid: 14c11eb1ec6612143b8b4b72a0669ffe, type: 3}
+  - {fileID: 4900000, guid: e69e7af14967f9c4a8a7b39c3acc5d7b, type: 3}
   margins: 10
   deckSelectPrefab: {fileID: 3487371901643285509, guid: cd08fc2c32dc20d419da027d5ea5dbd4, type: 3}
   decksContentArea: {fileID: 1973691910}
@@ -4743,7 +4747,7 @@ MonoBehaviour:
   GameCanvas: {fileID: 1135125318}
   Managers: {fileID: 154132953}
   events: {fileID: 11400000, guid: 5f309094ecee4d043918ddbc3f048730, type: 2}
-  PickedDecks: []
+  PickedDecks_answersData: []
 --- !u!1 &1826771166
 GameObject:
   m_ObjectHideFlags: 0
