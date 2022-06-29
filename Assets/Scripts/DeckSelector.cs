@@ -61,7 +61,17 @@ public class DeckSelector : MonoBehaviour
         List<string> csvDecks = new List<string>();
 
 
+#if UNITY_EDITOR
 
+
+        //codice per farlo funzionare nell'editor
+        DirectoryInfo di = new DirectoryInfo("Assets/Resources");
+        FileInfo[] smFiles = di.GetFiles("*.csv");
+        foreach (FileInfo fi in smFiles)
+        {
+            csvDecks.Add(Path.GetFileNameWithoutExtension(fi.Name));
+        }
+#else
         //codice per farlo funzionare su mobile
         string path = "jar:file://" + Application.dataPath + "!/assets/alphabet.txt";
         UnityWebRequest wwwfile = UnityWebRequest.Get(path);
@@ -77,17 +87,7 @@ public class DeckSelector : MonoBehaviour
             csvDecks.Add(line);
         }
 
-
-        //codice per farlo funzionare nell'editor
-        /*
-        DirectoryInfo di = new DirectoryInfo("Assets/Resources");
-        FileInfo[] smFiles = di.GetFiles("*.csv");
-        foreach (FileInfo fi in smFiles)
-        {
-            csvDecks.Add(Path.GetFileNameWithoutExtension(fi.Name));
-        }
-        */
-
+#endif
 
         return csvDecks;
 

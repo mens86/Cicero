@@ -4171,7 +4171,7 @@ MonoBehaviour:
   prefab: {fileID: 1673317224429184889, guid: bf3bac54f0086174198d8ebea64af155, type: 3}
   allAnswers: []
   firstButton: {fileID: 0}
-  currentTextInInputField: '   '
+  currentTextInInputField: 
 --- !u!1 &1542970829
 GameObject:
   m_ObjectHideFlags: 0
