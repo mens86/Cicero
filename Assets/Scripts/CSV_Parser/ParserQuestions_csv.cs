@@ -16,7 +16,7 @@ public class ParserQuestions_csv : MonoBehaviour
         for (int i = 0; i < decks_textAssets.Count; i++)
         {
             TextAsset txt = decks_textAssets[i];
-            Debug.Assert(txt != null, "Il file csv deve essere messo nella cartella Assets/Resources. Il nome del file non deve includere l'estensione");
+            Debug.Assert(txt != null, "Il file csv deve essere messo nella cartella Assets/Mazzi CSV. Il nome del file non deve includere l'estensione");
 
             string filecontent = txt.text;
             filecontent = filecontent.Replace("\r", "");

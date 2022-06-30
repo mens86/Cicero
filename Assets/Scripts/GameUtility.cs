@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.IO;
 using System.Xml.Serialization;
@@ -16,6 +17,13 @@ public class GameUtility
         }
     }
 }
+
+
+//LA PROSSIMA VOLTA CHE TORNI QUA CANCELLA STA ROBA//
+
+
+
+/*   
 [System.Serializable()]
 public class Data
 {
@@ -49,3 +57,4 @@ public class Data
         }
     }
 }
+*/

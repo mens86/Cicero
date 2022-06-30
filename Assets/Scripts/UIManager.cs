@@ -20,6 +20,8 @@ public struct UIManagerParameters
     public Color IncorrectBGColor { get { return incorrectBGColor; } }
     [SerializeField] Color finalBGColor;
     public Color FinalBGColor { get { return finalBGColor; } }
+    [SerializeField] Color intermediateBGColor;
+    public Color IntermediateBGColor { get { return intermediateBGColor; } }
 }
 
 
@@ -69,7 +71,7 @@ public struct UIElements
 
 public class UIManager : MonoBehaviour
 {
-    public enum ResolutionScreenType { Correct, Incorrect, Finish }
+    public enum ResolutionScreenType { Correct, Incorrect, LessThanCorrect, MoreThanCorrect, Finish }
 
     [Header("References")]
     [SerializeField] GameEvents events;
@@ -132,10 +134,13 @@ public class UIManager : MonoBehaviour
             IE_DisplayTimedResolution = DisplayTimedResolution();
             StartCoroutine(IE_DisplayTimedResolution);
         }
+
+
     }
 
     IEnumerator DisplayTimedResolution()
     {
+
         yield return new WaitForSeconds(ResolutionDelayTime);
         uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 1);
         uIElements.MainCanvasGroup.blocksRaycasts = true;
@@ -145,30 +150,39 @@ public class UIManager : MonoBehaviour
     {
         var highscore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
 
+
+        var answersToCurrentQuestion = GameObject.Find("Managers").GetComponent<GameManager>().questions[GameObject.Find("Managers").GetComponent<GameManager>().currentQuestion].Answers;
+        string CorrectAnswers = "";
+        foreach (var a in answersToCurrentQuestion)
+        {
+            CorrectAnswers += "\n" + a.Info;
+        }
+
         switch (type)
         {
             case ResolutionScreenType.Correct:
-                ResolutionDelayTime = 1;
                 uIElements.ResolutionBG.color = parameters.CorrectBGColor;
                 uIElements.ResolutionStateInfoText.text = "CORRECT!";
                 uIElements.ResolutionScoreText.text = "+" + score;
                 break;
 
-
             case ResolutionScreenType.Incorrect:
-                ResolutionDelayTime = 3;
                 uIElements.ResolutionBG.color = parameters.IncorrectBGColor;
-
-                var answersToCurrentQuestion = GameObject.Find("Managers").GetComponent<GameManager>().questions[GameObject.Find("Managers").GetComponent<GameManager>().currentQuestion].Answers;
-                string CorrectAnswers = "";
-                foreach (var a in answersToCurrentQuestion)
-                {
-                    CorrectAnswers += "\n" + a.Info;
-                }
                 uIElements.ResolutionStateInfoText.text = "WRONG! \nThe correct answer was: \n\n" + CorrectAnswers;
                 uIElements.ResolutionScoreText.text = "-" + score;
                 break;
 
+            case ResolutionScreenType.LessThanCorrect:
+                uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
+                uIElements.ResolutionStateInfoText.text = "ALMOST! \nThe correct answer was: \n\n" + CorrectAnswers;
+                uIElements.ResolutionScoreText.text = "+" + score;
+                break;
+
+            case ResolutionScreenType.MoreThanCorrect:
+                uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
+                uIElements.ResolutionStateInfoText.text = "TOO MUCH! \nThe correct answer was: \n\n" + CorrectAnswers;
+                uIElements.ResolutionScoreText.text = "+" + score;
+                break;
 
             case ResolutionScreenType.Finish:
                 uIElements.ResolutionBG.color = parameters.FinalBGColor;

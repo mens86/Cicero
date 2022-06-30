@@ -27,8 +27,9 @@ public class GameManager : MonoBehaviour
     public int currentQuestion = 0;
 
     private int timerStateParaHash = 0;
+    public enum UserAnswersScenario { AllCorrect, LessThanCorrect, MoreThanCorrect, AllWrong }
 
-    private IEnumerator IE_WaitTillNextRound = null;
+
     private IEnumerator IE_StartTimer = null;
 
     private bool IsFinished
@@ -138,45 +139,63 @@ public class GameManager : MonoBehaviour
     public void Accept()
     {
         UPdateTimer(false);
-        bool isCorrect = CheckAnswers();
+        UserAnswersScenario scenario = CheckAnswers();
         FinishedQuestions.Add(currentQuestion);
 
-        UpdateScore((isCorrect) ? questions[currentQuestion].AddScore : -questions[currentQuestion].AddScore);
-
-        if (IsFinished)
+        switch (scenario)
         {
-            //carica il livello successivo quando finisci quello che stai facendo
-            events.level++;
-            if (events.level > GameEvents.maxlevel)
+            case UserAnswersScenario.AllCorrect:
+                GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 1;
+                UpdateScore(questions[currentQuestion].AddScore);
+                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Correct, questions[currentQuestion].AddScore);
+                AudioManager.Instance.PlaySound("CorrectSFX");
+                break;
+            case UserAnswersScenario.AllWrong:
+                GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 3;
+                UpdateScore(-questions[currentQuestion].AddScore);
+                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Incorrect, questions[currentQuestion].AddScore);
+                AudioManager.Instance.PlaySound("IncorrectSFX");
+                break;
+            case UserAnswersScenario.LessThanCorrect:
+                GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 3;
+                UpdateScore(questions[currentQuestion].AddScore / 2);
+                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.LessThanCorrect, questions[currentQuestion].AddScore / 2);
+                AudioManager.Instance.PlaySound("IncorrectSFX");
+                break;
+            case UserAnswersScenario.MoreThanCorrect:
+                GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 3;
+                UpdateScore(questions[currentQuestion].AddScore / 2);
+                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.MoreThanCorrect, questions[currentQuestion].AddScore / 2);
+                AudioManager.Instance.PlaySound("IncorrectSFX");
+                break;
+        }
+
+        float currentResolutionDelayTime = GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime;
+        if (!IsFinished)
+        {
+            StartCoroutine(ExecuteAfterTime(currentResolutionDelayTime));
+            IEnumerator ExecuteAfterTime(float time)
             {
-                events.level = 1;
+                yield return new WaitForSeconds(time);
+                Display();
             }
-            //
-            SetHighScore();
         }
-
-
-        var type = (IsFinished) ? UIManager.ResolutionScreenType.Finish : (isCorrect) ? UIManager.ResolutionScreenType.Correct : UIManager.ResolutionScreenType.Incorrect;
-
-        if (events.DisplayResolutionScreen != null)
+        else
         {
-            events.DisplayResolutionScreen(type, questions[currentQuestion].AddScore);
-        }
-
-        AudioManager.Instance.PlaySound((isCorrect) ? "CorrectSFX" : "IncorrectSFX");
-
-        if (type != UIManager.ResolutionScreenType.Finish)
-        {
-            if (IE_WaitTillNextRound != null)
+            StartCoroutine(ExecuteAfterTime(currentResolutionDelayTime));
+            IEnumerator ExecuteAfterTime(float time)
             {
-                StopCoroutine(IE_WaitTillNextRound);
+                yield return new WaitForSeconds(time);
+                SetHighScore();
+                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Finish, 0);
             }
-            IE_WaitTillNextRound = WaitTillNextRound();
-            StartCoroutine(IE_WaitTillNextRound);
-
         }
+
+
 
     }
+
+
 
     void UPdateTimer(bool state)
     {
@@ -232,11 +251,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    IEnumerator WaitTillNextRound()
-    {
-        yield return new WaitForSeconds(GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime);
-        Display();
-    }
+
 
 
 
@@ -260,42 +275,15 @@ public class GameManager : MonoBehaviour
         return random;
     }
 
-    bool CheckAnswers()
-    {
-        if (!CompareAnswers())
-        {
-            return false;
-        }
-        return true;
-    }
-
-    /*
-        bool CompareAnswersOLD()
-        {
-            if (PickedAnswers.Count > 0)
-            {
-                List<int> c  = data.Questions[currentQuestion].GetCorrectAnswers();
-                List<int> p = PickedAnswers.Select(x => x.AnswerIndex).ToList();
 
 
-                foreach( var x in p) {
-                Debug.Log( x);}
 
-                var f = c.Except(p).ToList();
-                var s = p.Except(c).ToList();
 
-                return !f.Any() && !s.Any();       
-            }
-            return false;
-
-        }
-    */
-
-    bool CompareAnswers()
+    UserAnswersScenario CheckAnswers()
     {
         if (PickedAnswers.Count > 0)
         {
-            List<string> c = questions[currentQuestion].GetCorrectAnswers();
+            List<string> q = questions[currentQuestion].GetCorrectAnswers();
             List<string> p = PickedAnswers.Select(x => x.infoTextObject.text).ToList();
 
             /*
@@ -307,12 +295,35 @@ public class GameManager : MonoBehaviour
             Debug.Log( x);}
             */
 
-            var f = c.Except(p).ToList();
-            var s = p.Except(c).ToList();
+            var qq = q.Except(p).ToList();
+            var pp = p.Except(q).ToList();
 
-            return !f.Any() && !s.Any();
+
+
+            //meno delle giuste: 
+            if (qq.Any() && !pp.Any())
+            {
+                return UserAnswersScenario.LessThanCorrect;
+            }
+            //più delle giuste: 
+            if (!qq.Any() && pp.Any())
+            {
+                return UserAnswersScenario.MoreThanCorrect;
+            }
+
+            //tutte giuste
+            if (!qq.Any() && !pp.Any())
+            {
+                return UserAnswersScenario.AllCorrect;
+            }
+
+            //tutte sbagliate
+            if (qq.Any() && pp.Any())
+            {
+                return UserAnswersScenario.AllWrong;
+            }
         }
-        return false;
+        return UserAnswersScenario.AllWrong;
     }
 
 
