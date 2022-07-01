@@ -59,8 +59,15 @@ public class Autocomplete : MonoBehaviour
     {
         float margins = 5;
         float offset = 0 - margins;
+        int resultToDisplay = 10;
+        if (results.Count < resultToDisplay)
+        {
+            resultToDisplay = results.Count;
+        }
 
-        for (int resultIndex = 0; resultIndex < results.Count; resultIndex++)
+
+
+        for (int resultIndex = 0; resultIndex < resultToDisplay; resultIndex++)
         {
             RectTransform child = Instantiate(prefab, resultsParent) as RectTransform;
             child.GetComponentInChildren<TextMeshProUGUI>().text = results[resultIndex];
