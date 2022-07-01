@@ -25,8 +25,8 @@ public class GameManager : MonoBehaviour
     public List<AnswerData> PickedAnswers = new List<AnswerData>();
     private List<int> FinishedQuestions = new List<int>();
     public int currentQuestion = 0;
-
     private int timerStateParaHash = 0;
+    private float scoreMultiplier = 1.0f;
     public enum UserAnswersScenario { AllCorrect, LessThanCorrect, MoreThanCorrect, AllWrong }
 
 
@@ -141,31 +141,33 @@ public class GameManager : MonoBehaviour
         UPdateTimer(false);
         UserAnswersScenario scenario = CheckAnswers();
         FinishedQuestions.Add(currentQuestion);
+        int scorePerAnswer = questions[currentQuestion].AddScore;
+        float score = scorePerAnswer * scoreMultiplier;
 
         switch (scenario)
         {
             case UserAnswersScenario.AllCorrect:
                 GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 1;
-                UpdateScore(questions[currentQuestion].AddScore);
-                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Correct, questions[currentQuestion].AddScore);
+                UpdateScore(score);
+                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Correct, score);
                 AudioManager.Instance.PlaySound("CorrectSFX");
                 break;
             case UserAnswersScenario.AllWrong:
                 GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 3;
-                UpdateScore(-questions[currentQuestion].AddScore);
-                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Incorrect, questions[currentQuestion].AddScore);
+                UpdateScore(score);
+                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Incorrect, score);
                 AudioManager.Instance.PlaySound("IncorrectSFX");
                 break;
             case UserAnswersScenario.LessThanCorrect:
                 GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 3;
-                UpdateScore(questions[currentQuestion].AddScore / 2);
-                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.LessThanCorrect, questions[currentQuestion].AddScore / 2);
+                UpdateScore(score);
+                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.LessThanCorrect, score);
                 AudioManager.Instance.PlaySound("IncorrectSFX");
                 break;
             case UserAnswersScenario.MoreThanCorrect:
                 GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 3;
-                UpdateScore(questions[currentQuestion].AddScore / 2);
-                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.MoreThanCorrect, questions[currentQuestion].AddScore / 2);
+                UpdateScore(score);
+                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.MoreThanCorrect, score);
                 AudioManager.Instance.PlaySound("IncorrectSFX");
                 break;
         }
@@ -283,8 +285,9 @@ public class GameManager : MonoBehaviour
     {
         if (PickedAnswers.Count > 0)
         {
-            List<string> q = questions[currentQuestion].GetCorrectAnswers();
-            List<string> p = PickedAnswers.Select(x => x.infoTextObject.text).ToList();
+            List<string> pickedAnswers = PickedAnswers.Select(x => x.infoTextObject.text).ToList();
+            List<string> actualAnswers = questions[currentQuestion].GetCorrectAnswers();
+
 
             /*
             Debug.Log("Risposte giuste");
@@ -295,34 +298,37 @@ public class GameManager : MonoBehaviour
             Debug.Log( x);}
             */
 
-            var qq = q.Except(p).ToList();
-            var pp = p.Except(q).ToList();
-
-
+            var qq = actualAnswers.Except(pickedAnswers).ToList();
+            var pp = pickedAnswers.Except(actualAnswers).ToList();
 
             //meno delle giuste: 
             if (qq.Any() && !pp.Any())
             {
+                scoreMultiplier = pickedAnswers.Count;
                 return UserAnswersScenario.LessThanCorrect;
             }
             //più delle giuste: 
             if (!qq.Any() && pp.Any())
             {
+                scoreMultiplier = (float)actualAnswers.Count / (float)pickedAnswers.Count;
                 return UserAnswersScenario.MoreThanCorrect;
             }
 
             //tutte giuste
             if (!qq.Any() && !pp.Any())
             {
+                scoreMultiplier = actualAnswers.Count;
                 return UserAnswersScenario.AllCorrect;
             }
 
             //tutte sbagliate
             if (qq.Any() && pp.Any())
             {
+                scoreMultiplier = 0;
                 return UserAnswersScenario.AllWrong;
             }
         }
+        scoreMultiplier = 0;
         return UserAnswersScenario.AllWrong;
     }
 
@@ -343,11 +349,11 @@ public class GameManager : MonoBehaviour
         var highscore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
         if (highscore < events.CurrentFinalScore)
         {
-            PlayerPrefs.SetInt(GameUtility.SavePrefKey, events.CurrentFinalScore);
+            PlayerPrefs.SetFloat(GameUtility.SavePrefKey, events.CurrentFinalScore);
         }
     }
 
-    private void UpdateScore(int add)
+    private void UpdateScore(float add)
     {
         events.CurrentFinalScore += add;
         //se vuoi che il minimo punteggio sia 0

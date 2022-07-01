@@ -119,7 +119,7 @@ public class UIManager : MonoBehaviour
         CreateAnswers(question);
     }
 
-    void DisplayResolution(ResolutionScreenType type, int score)
+    void DisplayResolution(ResolutionScreenType type, float score)
     {
         UpdateResUI(type, score);
         uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 2);
@@ -146,13 +146,15 @@ public class UIManager : MonoBehaviour
         uIElements.MainCanvasGroup.blocksRaycasts = true;
     }
 
-    void UpdateResUI(ResolutionScreenType type, int score)
+    void UpdateResUI(ResolutionScreenType type, float score)
     {
         var highscore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
 
 
         var answersToCurrentQuestion = GameObject.Find("Managers").GetComponent<GameManager>().questions[GameObject.Find("Managers").GetComponent<GameManager>().currentQuestion].Answers;
+        int scoreForEachAnswer = GameObject.Find("Managers").GetComponent<GameManager>().questions[GameObject.Find("Managers").GetComponent<GameManager>().currentQuestion].AddScore;
         string CorrectAnswers = "";
+        int maxScoreForCurrentAnswer = answersToCurrentQuestion.Length * scoreForEachAnswer;
         foreach (var a in answersToCurrentQuestion)
         {
             CorrectAnswers += "\n" + a.Info;
@@ -163,25 +165,25 @@ public class UIManager : MonoBehaviour
             case ResolutionScreenType.Correct:
                 uIElements.ResolutionBG.color = parameters.CorrectBGColor;
                 uIElements.ResolutionStateInfoText.text = "CORRECT!";
-                uIElements.ResolutionScoreText.text = "+" + score;
+                uIElements.ResolutionScoreText.text = "" + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.Incorrect:
                 uIElements.ResolutionBG.color = parameters.IncorrectBGColor;
                 uIElements.ResolutionStateInfoText.text = "WRONG! \nThe correct answer was: \n\n" + CorrectAnswers;
-                uIElements.ResolutionScoreText.text = "-" + score;
+                uIElements.ResolutionScoreText.text = "" + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.LessThanCorrect:
                 uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
                 uIElements.ResolutionStateInfoText.text = "ALMOST! \nThe correct answer was: \n\n" + CorrectAnswers;
-                uIElements.ResolutionScoreText.text = "+" + score;
+                uIElements.ResolutionScoreText.text = "" + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.MoreThanCorrect:
                 uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
                 uIElements.ResolutionStateInfoText.text = "TOO MUCH! \nThe correct answer was: \n\n" + CorrectAnswers;
-                uIElements.ResolutionScoreText.text = "+" + score;
+                uIElements.ResolutionScoreText.text = "" + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.Finish:

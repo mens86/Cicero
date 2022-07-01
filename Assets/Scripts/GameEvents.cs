@@ -13,7 +13,7 @@ public class GameEvents : ScriptableObject
     public delegate void UpdateQuestionAnswerCallback(AnswerData pickedAnswer);
     public UpdateQuestionAnswerCallback updateQuestionAnswer = null;
 
-    public delegate void DisplayResolutionScreenCallback(UIManager.ResolutionScreenType type, int score);
+    public delegate void DisplayResolutionScreenCallback(UIManager.ResolutionScreenType type, float score);
     public DisplayResolutionScreenCallback DisplayResolutionScreen = null;
 
     public delegate void ScoreUpdatedCallback();
@@ -22,7 +22,7 @@ public class GameEvents : ScriptableObject
     public const int maxlevel = 2;
 
     [HideInInspector]
-    public int CurrentFinalScore = 0;
+    public float CurrentFinalScore = 0;
     [HideInInspector]
     public int StartupHighScore = 0;
 
