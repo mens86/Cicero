@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
         UserAnswersScenario scenario = CheckAnswers();
         FinishedQuestions.Add(currentQuestion);
         int scorePerAnswer = questions[currentQuestion].AddScore;
-        float score = scorePerAnswer * scoreMultiplier;
+        float score = Mathf.Round(scorePerAnswer * scoreMultiplier);
 
         switch (scenario)
         {
@@ -302,9 +302,9 @@ public class GameManager : MonoBehaviour
             var pp = pickedAnswers.Except(actualAnswers).ToList();
 
             //meno delle giuste: 
-            if (qq.Any() && !pp.Any())
+            if (qq.Any() && qq.Count < actualAnswers.Count)
             {
-                scoreMultiplier = pickedAnswers.Count;
+                scoreMultiplier = actualAnswers.Count - qq.Count;
                 return UserAnswersScenario.LessThanCorrect;
             }
             //più delle giuste: 
@@ -322,7 +322,7 @@ public class GameManager : MonoBehaviour
             }
 
             //tutte sbagliate
-            if (qq.Any() && pp.Any())
+            if (qq.Count == actualAnswers.Count)
             {
                 scoreMultiplier = 0;
                 return UserAnswersScenario.AllWrong;

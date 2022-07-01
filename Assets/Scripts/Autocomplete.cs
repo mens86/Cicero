@@ -59,7 +59,7 @@ public class Autocomplete : MonoBehaviour
     {
         float margins = 5;
         float offset = 0 - margins;
-        int resultToDisplay = 10;
+        int resultToDisplay = 10; //decidi quanti risultati vuoi mettere nell'autocomplete. Non può essere tutti perché poi va lento
         if (results.Count < resultToDisplay)
         {
             resultToDisplay = results.Count;
