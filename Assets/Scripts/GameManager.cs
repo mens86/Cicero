@@ -356,13 +356,7 @@ public class GameManager : MonoBehaviour
     private void UpdateScore(float add)
     {
         events.CurrentFinalScore += add;
-        //se vuoi che il minimo punteggio sia 0
-        /*
-        if(events.CurrentFinalScore < 0)
-        {
-            events.CurrentFinalScore = 0;
-        }
-        */
+
         if (events.ScoreUpdated != null)
         {
             events.ScoreUpdated();

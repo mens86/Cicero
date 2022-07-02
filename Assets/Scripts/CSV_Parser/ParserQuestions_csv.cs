@@ -67,7 +67,6 @@ public class ParserQuestions_csv : MonoBehaviour
         {
             Answer newAnswer = new Answer();
             newAnswer.Info = currAnswer;
-            newAnswer.IsCorrect = true;
             questionAnswers.Add(newAnswer);
 
             //create the autocomplete list with all the answers

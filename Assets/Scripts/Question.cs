@@ -9,7 +9,6 @@ public enum AnswerType { Multi, Single }
 public class Answer
 {
     public string Info = string.Empty;
-    public bool IsCorrect = false;
 
     public Answer() { }
 
@@ -32,10 +31,7 @@ public class Question
         List<string> CorrectAnswers = new List<string>();
         for (int i = 0; i < Answers.Length; i++)
         {
-            if (Answers[i].IsCorrect)
-            {
-                CorrectAnswers.Add(Answers[i].Info);
-            }
+            CorrectAnswers.Add(Answers[i].Info);
         }
 
         return CorrectAnswers;
