@@ -24,18 +24,28 @@ public class ParserQuestions_csv : MonoBehaviour
             string[] lines = filecontent.Split('\n');
             foreach (var currLine in lines)
             {
-                bool isEmptyLine = currLine.Replace(";", "").Length == 0;
-                if (isEmptyLine)
+                Question parsedQuestion = ParseQuestion(currLine);
+                if (parsedQuestion != null)
                 {
-                    continue;
+                    result.Add(parsedQuestion);
                 }
-
-                var newQuestion = CreateQuestion(currLine);
-                result.Add(newQuestion);
             }
         }
 
         return result;
+    }
+
+    private Question ParseQuestion(string txt)
+    {
+        bool isEmptyLine = txt.Replace(";", "").Length == 0;
+        if (isEmptyLine)
+        {
+            return null;
+        }
+
+        var newQuestion = CreateQuestion(txt);
+        return newQuestion;
+
     }
 
     private Question CreateQuestion(string currLine)
