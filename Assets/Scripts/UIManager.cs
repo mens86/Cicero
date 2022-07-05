@@ -87,7 +87,6 @@ public class UIManager : MonoBehaviour
     [Space]
     [SerializeField] UIManagerParameters parameters;
 
-    List<AnswerData> currentAnswers = new List<AnswerData>();
     private int resStateParaHash = 0;
 
     public float ResolutionDelayTime = 1;
@@ -116,7 +115,7 @@ public class UIManager : MonoBehaviour
     void UpdateQuestionUI(Question question)
     {
         uIElements.QuestionInfoTextObject.text = question.Info;
-        CreateAnswers(question);
+
     }
 
     void DisplayResolution(ResolutionScreenType type, float score)
@@ -134,8 +133,6 @@ public class UIManager : MonoBehaviour
             IE_DisplayTimedResolution = DisplayTimedResolution();
             StartCoroutine(IE_DisplayTimedResolution);
         }
-
-
     }
 
     IEnumerator DisplayTimedResolution()
@@ -157,7 +154,7 @@ public class UIManager : MonoBehaviour
         int maxScoreForCurrentAnswer = answersToCurrentQuestion.Length * scoreForEachAnswer;
         foreach (var a in answersToCurrentQuestion)
         {
-            CorrectAnswers += "\n" + a.Info;
+            CorrectAnswers += "\n" + a.correctAnswerGroup[0]; // Questo si può fare meglio e mostrare tutti i sinonimi con un forlooppino. Si tratta di decidere.
         }
 
         switch (type)
@@ -213,26 +210,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    void CreateAnswers(Question question)
-    {
-        EraseAnswers();
-        for (int i = 0; i < question.Answers.Length; i++)
-        {
-            AnswerData newAnswer = (AnswerData)Instantiate(answerPrefab);
-            newAnswer.UpdateData(question.Answers[i].Info, i);
-            currentAnswers.Add(newAnswer);
-        }
-    }
 
-    void EraseAnswers()
-    {
-        foreach (var answer in currentAnswers)
-        {
-            Destroy(answer.gameObject);
-        }
-        currentAnswers.Clear();
-
-    }
 
     void UpdateScoreUI()
     {

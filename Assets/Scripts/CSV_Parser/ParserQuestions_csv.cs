@@ -76,11 +76,19 @@ public class ParserQuestions_csv : MonoBehaviour
         foreach (var currAnswer in answers)
         {
             Answer newAnswer = new Answer();
-            newAnswer.Info = currAnswer;
+
+            List<string> synonyms = currAnswer.Split('$').ToList();
+            newAnswer.correctAnswerGroup = synonyms;
             questionAnswers.Add(newAnswer);
 
-            //create the autocomplete list with all the answers
-            GameObject.Find("InputField").GetComponent<Autocomplete>().allAnswers.Add(currAnswer);
+
+            //create the autocomplete list with all the answers (with all synonyms)
+            foreach (var synonym in synonyms)
+            {
+                GameObject.Find("InputField").GetComponent<Autocomplete>().allAnswers.Add(synonym);
+
+            }
+
         }
         return questionAnswers;
     }

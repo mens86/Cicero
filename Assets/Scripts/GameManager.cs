@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     private List<int> FinishedQuestions = new List<int>();
     public int currentQuestion = 0;
     private int timerStateParaHash = 0;
-    private float scoreMultiplier = 1.0f;
+
 
 
     private IEnumerator IE_StartTimer = null;
