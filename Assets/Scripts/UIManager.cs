@@ -154,7 +154,7 @@ public class UIManager : MonoBehaviour
         int maxScoreForCurrentAnswer = answersToCurrentQuestion.Length * scoreForEachAnswer;
         foreach (var a in answersToCurrentQuestion)
         {
-            CorrectAnswers += "\n" + a.correctAnswerGroup[0]; // Questo si può fare meglio e mostrare tutti i sinonimi con un forlooppino. Si tratta di decidere.
+            CorrectAnswers += "\n" + a.groupOfSynonyms[0]; // Questo si può fare meglio e mostrare tutti i sinonimi con un forlooppino. Si tratta di decidere.
         }
 
         switch (type)

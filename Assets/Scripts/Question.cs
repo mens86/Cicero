@@ -10,8 +10,8 @@ public enum AnswerType { Multi, Single }
 [Serializable]
 public class Answer
 {
-    //public string Info = string.Empty;
-    public List<string> correctAnswerGroup;
+    //all correct synonyms
+    public List<string> groupOfSynonyms;
 
     public Answer() { }
 
@@ -26,14 +26,14 @@ public class Answer
         foreach (var x in input)
         {
 
-            int correctAnswerIndex = correctAnswerGroup.IndexOf(x);
+            int correctAnswerIndex = groupOfSynonyms.IndexOf(x);
             if (correctAnswerIndex != -1)
             {
-                return correctAnswerGroup[correctAnswerIndex];
+                return groupOfSynonyms[correctAnswerIndex];
             }
 
         }
-        return correctAnswerGroup[0];
+        return groupOfSynonyms[0];
     }
 
 

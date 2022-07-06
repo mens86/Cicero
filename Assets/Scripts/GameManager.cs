@@ -283,62 +283,6 @@ public class GameManager : MonoBehaviour
 
 
 
-
-    // UserAnswersScenario CheckAnswers()
-    // {
-    //     if (PickedAnswers.Count > 0)
-    //     {
-    //         List<string> pickedAnswers = PickedAnswers.Select(x => x.infoTextObject.text).ToList();
-    //         questions[currentQuestion].CheckAnswer(pickedAnswers);
-
-    //     List<string> actualAnswers = questions[currentQuestion].GetCorrectAnswers();
-
-
-    //     /*
-    //     Debug.Log("Risposte giuste");
-    //     foreach( var x in p) {
-    //     Debug.Log( x);}
-    //     Debug.Log("Risposte selezionate");
-    //     foreach( var x in c) {
-    //     Debug.Log( x);}
-    //     */
-
-    //     var qq = actualAnswers.Except(pickedAnswers).ToList();
-    //     var pp = pickedAnswers.Except(actualAnswers).ToList();
-
-    //     //meno delle giuste: 
-    //     if (qq.Any() && qq.Count < actualAnswers.Count)
-    //     {
-    //         scoreMultiplier = actualAnswers.Count - qq.Count;
-    //         return UserAnswersScenario.LessThanCorrect;
-    //     }
-    //     //più delle giuste: 
-    //     if (!qq.Any() && pp.Any())
-    //     {
-    //         scoreMultiplier = (float)actualAnswers.Count / (float)pickedAnswers.Count;
-    //         return UserAnswersScenario.MoreThanCorrect;
-    //     }
-
-    //     //tutte giuste
-    //     if (!qq.Any() && !pp.Any())
-    //     {
-    //         scoreMultiplier = actualAnswers.Count;
-    //         return UserAnswersScenario.AllCorrect;
-    //     }
-
-    //     //tutte sbagliate
-    //     if (qq.Count == actualAnswers.Count)
-    //     {
-    //         scoreMultiplier = 0;
-    //         return UserAnswersScenario.AllWrong;
-    //     }
-    // }
-    // scoreMultiplier = 0;
-    // return UserAnswersScenario.AllWrong;
-    //     }
-    // }
-
-
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

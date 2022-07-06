@@ -78,7 +78,7 @@ public class ParserQuestions_csv : MonoBehaviour
             Answer newAnswer = new Answer();
 
             List<string> synonyms = currAnswer.Split('$').ToList();
-            newAnswer.correctAnswerGroup = synonyms;
+            newAnswer.groupOfSynonyms = synonyms;
             questionAnswers.Add(newAnswer);
 
 
