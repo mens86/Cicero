@@ -14,8 +14,19 @@ public class GameManager : MonoBehaviour
     #region Variables
 
     //private Data data = new Data();
-    public List<Question> questions;
-    public List<TextAsset> QuestionsFileNames;
+    public MemoryIndex memoryIndex;
+    public List<Question> questions => memoryIndex.persistentQuestionList;
+    public List<TextAsset> QuestionsFileNames
+    {
+        get
+        {
+            return memoryIndex.QuestionsFileNames;
+        }
+        set
+        {
+            memoryIndex.QuestionsFileNames = value;
+        }
+    }
 
     [SerializeField] GameEvents events = null;
 
@@ -57,7 +68,7 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         events.CurrentFinalScore = 0;
-        questions = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileNames);
+        // questions = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileNames);
     }
 
     void Start()

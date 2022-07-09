@@ -48,6 +48,7 @@ public class Question
     public int Timer = 0;
     public AnswerType Type = AnswerType.Single;
     public int AddScore = 0;
+    public CardProprieties cardProprieties;
 
     public Question() { }
 
@@ -122,3 +123,37 @@ public class Question
     }
 
 }
+
+public class CardProprieties
+{
+    public string cardState; //attuale numero di volte consecutive in cui è stata sbagliata una carta //questo devo pensare a come cazzo fare il consecutive
+    public int cardKnowledge; // questo numero serve a mostrare all'utente la % di conoscenza del mazzo
+    public int cardExpDate;
+    public int cardCurrentLeechLevel;
+    public bool isLeech;
+    /*
+        public CardProprieties(string newstate, int newknowledge, int newexpDate, int newcurrentLeechLevel, bool newisLeech)
+        {
+            state = newstate;
+            knowledge = newknowledge;
+            expDate = newexpDate;
+            currentLeechLevel = newcurrentLeechLevel;
+            isLeech = newisLeech;
+
+        }
+    */
+
+    //Nell'awake del gamemanager, assieme alle question della sessione, viene caricata la lista di CardProprieties di tutte le carte fin qui viste e modificate nelle loro 
+    //proprietà (potenzialmente tutte le carte di tutti i mazzi, nel lungo periodo). In memoryindex si aggiunge o modifica roba a questa lista di CardProprieties.
+    //Finita la sessione si salva la lista
+
+
+
+
+    //il problema è che questa lista è sempre diversa, perché dipende dai mazzi che scelgo all'inizio, quindi non la posso salvare. A meno che non salvi e carichi le liste di tutti i mazzi
+    //
+    //qui sovrascrivo ogni volta le carte 
+    //
+    //Alla fine della sessione salvo la lista di cardproprieties
+}
+

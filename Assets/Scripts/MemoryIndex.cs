@@ -1,11 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum UserAnswerState { AllWrong, AlmostAllWrong, AlmostAllRight, AllRight }
 
-public class MemoryIndex
+public class MemoryIndex : MonoBehaviour
 {
+    public List<Question> persistentQuestionList;
+    public List<TextAsset> QuestionsFileNames;
+
 
     public float currentInterval; // quanto tempo massimo passerà prima che la carta debba per forza ripresentarsi  (sommato all' "in questo momento" dà la data di scadenza)
     public float intervalModifier = 1.0f; //se è minore di 1 riduce tutti i tempi di attesa prima che la carta debba ripresentarsi
@@ -31,13 +35,38 @@ public class MemoryIndex
     public int leechTreshold = 4; //numero di volte consecutive in cui sbagliamo completamente una carta prima che diventi "sanguisuga"
     public bool isLeech = false; //stabilisce se una carta è sanguisuga sulla base dell'identità tra CurrentLeechInt e il LeechTreshold [cosa farsi se isLeexh è true, deciderò]  
 
+    void Awake()
+    {
+        persistentQuestionList = Load();
+        if (persistentQuestionList == null)
+        {
+            persistentQuestionList = new List<Question>();
+            persistentQuestionList = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileNames);
+        }
 
-    public void UpdateMemoryIndex(string question, UserAnswerState WhatUserAnswered)
+    }
+    void OnDestroy()
+    {
+        Save(persistentQuestionList);
+    }
+
+    private void Save(List<Question> persistentQuestionList)
+    {
+        throw new NotImplementedException();
+    }
+
+    private List<Question> Load()
+    {
+        return null;
+    }
+
+
+    public void UpdateMemoryIndex(string question, CardProprieties cardProprieties, UserAnswerState WhatUserAnswered)
     {
         string cardState = question + "State";
         string cardExpiringDate = question + "ExpiringDate";
-        //string questionCurrentLeech = question + "CurrentLeech"; //attuale numero di volte consecutive in cui è stata sbagliata una carta //questo devo pensare a come cazzo fare il consecutive
-        string cardKnowledge = question + "CardKnowledge"; // questo numero serve a mostrare all'utente la % di conoscenza del mazzo
+        //string questionCurrentLeech = question + "CurrentLeech"; 
+        string cardKnowledge = question + "CardKnowledge";
 
         string currentCardState = PlayerPrefs.GetString(cardState);
 
@@ -47,7 +76,8 @@ public class MemoryIndex
             {
                 case UserAnswerState.AllWrong:
                     currentInterval = learningStep0;
-                    PlayerPrefs.SetString(cardState, "LearningCard");
+                    cardProprieties.cardState = "LearningCard";
+
                     PlayerPrefs.SetInt(cardKnowledge, 1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
@@ -142,6 +172,7 @@ public class MemoryIndex
                     currentInterval = easyInterval;
                     PlayerPrefs.SetString(cardState, "GraduatedCard");
                     PlayerPrefs.SetInt(cardKnowledge, 2);
+
                     break;
             }
         }
