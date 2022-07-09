@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using NaughtyAttributes;
 using UnityEngine;
 
 public enum UserAnswerState { AllWrong, AlmostAllWrong, AlmostAllRight, AllRight }
@@ -13,7 +14,7 @@ public class MemoryIndex : MonoBehaviour
     private string QUESTIONS_FILEPATH => Application.persistentDataPath + "/questions.bin";
 
     public List<Question> persistentQuestionList; //Tutte le domande esistenti sono qui
-    public List<TextAsset> availableDecks => deckSelector.availableDecks; //Tutti i mazzi supportati
+    public List<TextAsset> availableDecks => deckSelector.availableDecks; //Tutti i mazzi supportati e li va a prendere sul deckselector
     [NonSerialized] public List<TextAsset> SelectedDecks_names; //Questo viene settato da DeckSelector
 
     public DeckSelector deckSelector;
@@ -84,9 +85,141 @@ public class MemoryIndex : MonoBehaviour
         return null;
     }
 
+    [ContextMenu("delete questions file")]
+    [Button]
+    public void CancelQuestionsFile()
+    {
+        if (File.Exists(QUESTIONS_FILEPATH))
+        {
+            File.Delete(QUESTIONS_FILEPATH);
+        }
+    }
+
 
     public void UpdateMemoryIndex(string question, CardProprieties cardProprieties, UserAnswerState WhatUserAnswered)
     {
+        string cardState = question + "State";
+        string cardExpiringDate = question + "ExpiringDate";
+        //string questionCurrentLeech = question + "CurrentLeech"; 
+        string cardKnowledge = question + "CardKnowledge";
+
+        string currentCardState = PlayerPrefs.GetString(cardState);
+
+        if (currentCardState == null) // = NewCard
+        {
+            switch (WhatUserAnswered)
+            {
+                case UserAnswerState.AllWrong:
+                    currentInterval = learningStep0;
+                    cardProprieties.cardState = "LearningCard";
+
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    break;
+                case UserAnswerState.AlmostAllWrong:
+                    currentInterval = learningStep1;
+                    PlayerPrefs.SetString(cardState, "LearningCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    break;
+                case UserAnswerState.AlmostAllRight:
+                    currentInterval = LearningStep2;
+                    PlayerPrefs.SetString(cardState, "LearningCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    break;
+                case UserAnswerState.AllRight:
+                    currentInterval = easyInterval;
+                    PlayerPrefs.SetString(cardState, "GraduatedCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 3);
+                    break;
+            }
+
+        }
+        else if (currentCardState == "LearningCard")
+        {
+            switch (WhatUserAnswered)
+            {
+                case UserAnswerState.AllWrong:
+                    currentInterval = learningStep0;
+                    PlayerPrefs.SetString(cardState, "LearningCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    break;
+                case UserAnswerState.AlmostAllWrong:
+                    currentInterval = learningStep1;
+                    PlayerPrefs.SetString(cardState, "LearningCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    break;
+                case UserAnswerState.AlmostAllRight:
+                    currentInterval = graduatingInterval;
+                    PlayerPrefs.SetString(cardState, "GraduatedCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    break;
+                case UserAnswerState.AllRight:
+                    currentInterval = easyInterval;
+                    PlayerPrefs.SetString(cardState, "GraduatedCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 3);
+                    break;
+            }
+        }
+        else if (currentCardState == "GraduatedCard")
+        {
+            switch (WhatUserAnswered)
+            {
+                case UserAnswerState.AllWrong:
+                    currentInterval = relearningStep;
+                    PlayerPrefs.SetString(cardState, "RelearningCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    ease = ease > minimumEase ? ease -= 0.20f : minimumEase; //ease -20%
+                    break;
+                case UserAnswerState.AlmostAllWrong:
+                    currentInterval = 1.2f * currentInterval * intervalModifier;
+                    PlayerPrefs.SetString(cardState, "RelearningCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    ease = ease > minimumEase ? ease -= 0.15f : minimumEase; //ease -15%
+                    break;
+                case UserAnswerState.AlmostAllRight:
+                    currentInterval = ease * currentInterval * intervalModifier;
+                    PlayerPrefs.SetInt(cardKnowledge, 2);
+                    break;
+                case UserAnswerState.AllRight:
+                    currentInterval = ease * currentInterval * easyBonus;
+                    ease = ease > minimumEase ? ease += 0.15f : minimumEase; //ease +15%
+                    PlayerPrefs.SetInt(cardKnowledge, 3);
+                    break;
+            }
+        }
+        else if (currentCardState == "RelearningCard")
+        {
+            switch (WhatUserAnswered)
+            {
+                case UserAnswerState.AllWrong:
+                    currentInterval = relearningStep;
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    break;
+                case UserAnswerState.AlmostAllWrong:
+                    currentInterval = 1.5f * relearningStep;
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    break;
+                case UserAnswerState.AlmostAllRight:
+                    currentInterval = newInterval * currentInterval;
+                    PlayerPrefs.SetString(cardState, "GraduatedCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 1);
+                    break;
+                case UserAnswerState.AllRight:
+                    currentInterval = easyInterval;
+                    PlayerPrefs.SetString(cardState, "GraduatedCard");
+                    PlayerPrefs.SetInt(cardKnowledge, 2);
+
+                    break;
+            }
+        }
+
+        SetExpiringDate();
+
+    }
+
+    //La question che ci arriva qui deve essere pescata da persistentQuestionsList
+    public void UpdateMemoryIndex(Question question, UserAnswerState WhatUserAnswered)
+    {
+        CardProprieties cardProprieties = question.cardProprieties;
         string cardState = question + "State";
         string cardExpiringDate = question + "ExpiringDate";
         //string questionCurrentLeech = question + "CurrentLeech"; 
