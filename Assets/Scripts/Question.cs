@@ -124,13 +124,14 @@ public class Question
 
 }
 
+[Serializable]
 public class CardProprieties
 {
-    public string cardState; //attuale numero di volte consecutive in cui è stata sbagliata una carta //questo devo pensare a come cazzo fare il consecutive
-    public int cardKnowledge; // questo numero serve a mostrare all'utente la % di conoscenza del mazzo
-    public int cardExpDate;
-    public int cardCurrentLeechLevel;
-    public bool isLeech;
+    public string cardState = "NewCard"; //attuale numero di volte consecutive in cui è stata sbagliata una carta //questo devo pensare a come cazzo fare il consecutive
+    public int cardKnowledge = 0; // questo numero serve a mostrare all'utente la % di conoscenza del mazzo
+    public int cardExpDate = 999;
+    public int cardCurrentLeechLevel = 0;
+    public bool isLeech = false;
     /*
         public CardProprieties(string newstate, int newknowledge, int newexpDate, int newcurrentLeechLevel, bool newisLeech)
         {

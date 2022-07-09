@@ -1,12 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 using UnityEngine;
 
 public enum UserAnswerState { AllWrong, AlmostAllWrong, AlmostAllRight, AllRight }
 
 public class MemoryIndex : MonoBehaviour
 {
+    private string QUESTIONS_FILEPATH => Application.persistentDataPath + "/questions.bin";
+
     public List<Question> persistentQuestionList;
     public List<TextAsset> QuestionsFileNames;
 
@@ -43,6 +48,10 @@ public class MemoryIndex : MonoBehaviour
             persistentQuestionList = new List<Question>();
             persistentQuestionList = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileNames);
         }
+        else
+        {
+            Debug.Log("Loaded questions " + persistentQuestionList.Count);
+        }
 
     }
     void OnDestroy()
@@ -52,12 +61,20 @@ public class MemoryIndex : MonoBehaviour
 
     private void Save(List<Question> persistentQuestionList)
     {
-        throw new NotImplementedException();
+        IFormatter formatter = new BinaryFormatter();
+        Stream stream = new FileStream(QUESTIONS_FILEPATH, FileMode.Create, FileAccess.Write, FileShare.None);
+        formatter.Serialize(stream, persistentQuestionList);
+        stream.Close();
+        Debug.Log("saved file to " + QUESTIONS_FILEPATH);
     }
 
     private List<Question> Load()
     {
-        return null;
+        IFormatter formatter = new BinaryFormatter();
+        Stream stream = new FileStream(QUESTIONS_FILEPATH, FileMode.Open, FileAccess.Read, FileShare.Read);
+        List<Question> obj = (List<Question>)formatter.Deserialize(stream);
+        stream.Close();
+        return obj;
     }
 
 
