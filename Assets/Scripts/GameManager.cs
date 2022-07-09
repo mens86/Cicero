@@ -15,16 +15,16 @@ public class GameManager : MonoBehaviour
 
     //private Data data = new Data();
     public MemoryIndex memoryIndex;
-    public List<Question> questions => memoryIndex.persistentQuestionList;
-    public List<TextAsset> QuestionsFileNames
+    public List<Question> questions = new List<Question>();
+    public List<TextAsset> SelectedDecks_names
     {
         get
         {
-            return memoryIndex.QuestionsFileNames;
+            return memoryIndex.SelectedDecks_names;
         }
         set
         {
-            memoryIndex.QuestionsFileNames = value;
+            memoryIndex.SelectedDecks_names = value;
         }
     }
 
@@ -68,7 +68,20 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         events.CurrentFinalScore = 0;
+        InitQuestions_WithSelectedDecks(SelectedDecks_names);
+
         // questions = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileNames);
+    }
+
+    void InitQuestions_WithSelectedDecks(List<TextAsset> selectedDecks)
+    {
+        foreach (var question_filename in selectedDecks)
+        {
+            var selectedDeck_name = question_filename.name;
+            List<Question> questions_matching_filename = memoryIndex.persistentQuestionList.Where(q => q.question_filename == selectedDeck_name).ToList();
+            questions.AddRange(questions_matching_filename);
+        }
+        Debug.Log("Decks initialized " + selectedDecks.Count);
     }
 
     void Start()

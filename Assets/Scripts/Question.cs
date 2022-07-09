@@ -49,6 +49,7 @@ public class Question
     public AnswerType Type = AnswerType.Single;
     public int AddScore = 0;
     public CardProprieties cardProprieties;
+    public string question_filename;
 
     public Question() { }
 

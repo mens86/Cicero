@@ -12,9 +12,11 @@ public class MemoryIndex : MonoBehaviour
 {
     private string QUESTIONS_FILEPATH => Application.persistentDataPath + "/questions.bin";
 
-    public List<Question> persistentQuestionList;
-    public List<TextAsset> QuestionsFileNames;
+    public List<Question> persistentQuestionList; //Tutte le domande esistenti sono qui
+    public List<TextAsset> availableDecks => deckSelector.availableDecks; //Tutti i mazzi supportati
+    [NonSerialized] public List<TextAsset> SelectedDecks_names; //Questo viene settato da DeckSelector
 
+    public DeckSelector deckSelector;
 
     public float currentInterval; // quanto tempo massimo passerà prima che la carta debba per forza ripresentarsi  (sommato all' "in questo momento" dà la data di scadenza)
     public float intervalModifier = 1.0f; //se è minore di 1 riduce tutti i tempi di attesa prima che la carta debba ripresentarsi
@@ -45,12 +47,13 @@ public class MemoryIndex : MonoBehaviour
         persistentQuestionList = Load();
         if (persistentQuestionList == null)
         {
+            //Questo codice viene eseguito solo la prima volta che l'applicazione viene eseguita
             persistentQuestionList = new List<Question>();
-            persistentQuestionList = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileNames);
+            persistentQuestionList = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(availableDecks);
         }
         else
         {
-            Debug.Log("Loaded questions " + persistentQuestionList.Count);
+            Debug.Log("[Success] Loaded questions " + persistentQuestionList.Count);
         }
 
     }
@@ -71,10 +74,14 @@ public class MemoryIndex : MonoBehaviour
     private List<Question> Load()
     {
         IFormatter formatter = new BinaryFormatter();
-        Stream stream = new FileStream(QUESTIONS_FILEPATH, FileMode.Open, FileAccess.Read, FileShare.Read);
-        List<Question> obj = (List<Question>)formatter.Deserialize(stream);
-        stream.Close();
-        return obj;
+        if (File.Exists(QUESTIONS_FILEPATH))
+        {
+            Stream stream = new FileStream(QUESTIONS_FILEPATH, FileMode.Open, FileAccess.Read, FileShare.Read);
+            List<Question> obj = (List<Question>)formatter.Deserialize(stream);
+            stream.Close();
+            return obj;
+        }
+        return null;
     }
 
 

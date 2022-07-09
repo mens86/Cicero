@@ -6,6 +6,7 @@ using System.Linq;
 public class ParserQuestions_csv : MonoBehaviour
 {
 
+    public Autocomplete autocomplete;
     private char delimiter = ';';
 
 
@@ -27,6 +28,7 @@ public class ParserQuestions_csv : MonoBehaviour
                 Question parsedQuestion = ParseQuestion(currLine);
                 if (parsedQuestion != null)
                 {
+                    parsedQuestion.question_filename = txt.name;
                     result.Add(parsedQuestion);
                 }
             }
@@ -50,9 +52,10 @@ public class ParserQuestions_csv : MonoBehaviour
 
     private Question CreateQuestion(string currLine)
     {
-        Question question = new Question();
         string[] cells = currLine.Split(delimiter);
+        Question question = null;
 
+        question = new Question();
         question.Info = cells[1];
         question.Answers = CreateAnswers(cells[6]).ToArray();
         if (cells[8] == "sì")
@@ -63,7 +66,6 @@ public class ParserQuestions_csv : MonoBehaviour
         question.Timer = timer;
         int score = Convert.ToInt32(cells[10]);
         question.AddScore = score;
-
 
 
         return question;
@@ -85,7 +87,7 @@ public class ParserQuestions_csv : MonoBehaviour
             //create the autocomplete list with all the answers (with all synonyms)
             foreach (var synonym in synonyms)
             {
-                GameObject.Find("InputField").GetComponent<Autocomplete>().allAnswers.Add(synonym);
+                autocomplete.allAnswers.Add(synonym);
 
             }
 

@@ -76,7 +76,7 @@ public class DeckSelector : MonoBehaviour
             }
         }
 
-        Managers.GetComponent<GameManager>().QuestionsFileNames = selectedDecks;
+        Managers.GetComponent<GameManager>().SelectedDecks_names = selectedDecks;
 
         if (selectedDecks.Count != 0)
         {
