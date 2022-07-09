@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     private Color timerDefaultColor;
 
     public List<AnswerData> PickedAnswers = new List<AnswerData>();
+    public Autocomplete autocomplete;
     private List<int> FinishedQuestions = new List<int>();
     public int currentQuestion = 0;
     private int timerStateParaHash = 0;
@@ -73,6 +74,7 @@ public class GameManager : MonoBehaviour
         // questions = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileNames);
     }
 
+
     void InitQuestions_WithSelectedDecks(List<TextAsset> selectedDecks)
     {
         foreach (var question_filename in selectedDecks)
@@ -80,6 +82,18 @@ public class GameManager : MonoBehaviour
             var selectedDeck_name = question_filename.name;
             List<Question> questions_matching_filename = memoryIndex.persistentQuestionList.Where(q => q.question_filename == selectedDeck_name).ToList();
             questions.AddRange(questions_matching_filename);
+
+            //create the autocomplete list with all the answers (with all synonyms)
+            foreach (var question in questions_matching_filename)
+            {
+                foreach (var answer in question.Answers)
+                {
+                    foreach (var synonym in answer.groupOfSynonyms)
+                    {
+                        autocomplete.allAnswers.Add(synonym);
+                    }
+                }
+            }
         }
         Debug.Log("Decks initialized " + selectedDecks.Count);
     }

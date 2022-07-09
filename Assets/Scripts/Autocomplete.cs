@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using System;
 
 public class Autocomplete : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class Autocomplete : MonoBehaviour
 
     private void Awake()
     {
+
         inputField.ActivateInputField();
         inputField.onValueChanged.AddListener(OnInputValueChanged);
         allAnswers.Sort();
@@ -71,7 +73,7 @@ public class Autocomplete : MonoBehaviour
         {
             RectTransform child = Instantiate(prefab, resultsParent) as RectTransform;
             child.GetComponentInChildren<TextMeshProUGUI>().text = results[resultIndex];
-            
+
 
             child.anchoredPosition = new Vector2(0, offset);
             offset -= (child.sizeDelta.y + margins);

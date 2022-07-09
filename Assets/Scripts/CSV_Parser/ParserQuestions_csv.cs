@@ -85,12 +85,12 @@ public class ParserQuestions_csv : MonoBehaviour
 
 
             //create the autocomplete list with all the answers (with all synonyms)
+            /*
             foreach (var synonym in synonyms)
             {
                 autocomplete.allAnswers.Add(synonym);
-
             }
-
+            */
         }
         return questionAnswers;
     }

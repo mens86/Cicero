@@ -89,17 +89,33 @@ public class Question
         var qq = actualAnswers.Except(pickedAnswers).ToList();
         var pp = pickedAnswers.Except(actualAnswers).ToList();
 
-
+        MemoryIndex memoryIndex = GameObject.Find("MemoryIndex").GetComponent<MemoryIndex>();
         //meno delle giuste: 
         if (qq.Any() && qq.Count < actualAnswers.Count)
         {
             scoreMultiplier = actualAnswers.Count - qq.Count;
+            if (qq.Count == 1) //la discrimine per dire "eran quasi tutte giuste" è che se ne sbagli solo una (indipendentemente dal numero di risposte di una domanda)
+            {
+                memoryIndex.UpdateMemoryIndex(this, UserAnswerState.AlmostAllRight);
+            }
+            else
+            {
+                memoryIndex.UpdateMemoryIndex(this, UserAnswerState.AlmostAllWrong);
+            }
             return (UserAnswersScenario.LessThanCorrect, scoreMultiplier);
         }
         //più delle giuste: 
         if (!qq.Any() && pp.Any())
         {
             scoreMultiplier = (float)actualAnswers.Count / (float)pickedAnswers.Count;
+            if (pp.Count == 1) //la discrimine per dire "eran quasi tutte giuste" è che se ne sbagli solo una (indipendentemente dal numero di risposte di una domanda)
+            {
+                memoryIndex.UpdateMemoryIndex(this, UserAnswerState.AlmostAllRight);
+            }
+            else
+            {
+                memoryIndex.UpdateMemoryIndex(this, UserAnswerState.AlmostAllWrong);
+            }
             return (UserAnswersScenario.MoreThanCorrect, scoreMultiplier);
         }
 
@@ -107,13 +123,16 @@ public class Question
         if (!qq.Any() && !pp.Any())
         {
             scoreMultiplier = actualAnswers.Count;
+            memoryIndex.UpdateMemoryIndex(this, UserAnswerState.AllRight);
             return (UserAnswersScenario.AllCorrect, scoreMultiplier);
+
         }
 
         //tutte sbagliate
         if (qq.Count == actualAnswers.Count)
         {
             scoreMultiplier = 0;
+            memoryIndex.UpdateMemoryIndex(this, UserAnswerState.AllWrong);
             return (UserAnswersScenario.AllWrong, scoreMultiplier);
         }
 
@@ -128,6 +147,7 @@ public class CardProprieties
 {
     public string cardState = "NewCard";
     public int cardKnowledge = 0; // questo numero serve a mostrare all'utente la % di conoscenza del mazzo
+    public float cardEase = 2.5f; //moltiplicatore che allarga la scadenza delle carte facili e accorcia quella delle difficili
     public int cardExpDate = 999;
     public int cardCurrentLeechLevel = 0; //attuale numero di volte consecutive in cui è stata sbagliata una carta //questo devo pensare a come cazzo fare il consecutive
     public bool isLeech = false;

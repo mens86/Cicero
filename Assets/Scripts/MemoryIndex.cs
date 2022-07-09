@@ -30,7 +30,6 @@ public class MemoryIndex : MonoBehaviour
     //graduated State currentinterval modifiers
     public int graduatingInterval = 86400; //un giorno in secondi [il tizio preferisce 3 giorni]
     public int easyInterval = 345600; //quattro giorni in secondi
-    public float ease = 2.5f; //moltiplicatore che allarga la scadenza delle carte facili e accorcia quella delle difficili
     public float minimumEase = 1.3f; //la presenza dell'ease minimo evita la ripetizione eccessiva delle parole difficili
     public float easyBonus = 1.5f; //bonus che distanzia maggiormente le facili
 
@@ -96,6 +95,8 @@ public class MemoryIndex : MonoBehaviour
     {
         CardProprieties cardProprieties = question.cardProprieties;
 
+        Debug.Log("Card before answer \n" + question.Info + "       State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
+
         if (cardProprieties.cardState == "NewCard")
         {
             switch (WhatUserAnswered)
@@ -157,21 +158,21 @@ public class MemoryIndex : MonoBehaviour
                     currentInterval = relearningStep;
                     cardProprieties.cardState = "RelearningCard";
                     cardProprieties.cardKnowledge = 1;
-                    ease = ease > minimumEase ? ease -= 0.20f : minimumEase; //ease -20%
+                    cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase -= 0.20f : minimumEase; //ease -20%
                     break;
                 case UserAnswerState.AlmostAllWrong:
                     currentInterval = 1.2f * currentInterval * intervalModifier;
                     cardProprieties.cardState = "RelearningCard";
                     cardProprieties.cardKnowledge = 1;
-                    ease = ease > minimumEase ? ease -= 0.15f : minimumEase; //ease -15%
+                    cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase -= 0.15f : minimumEase; //ease -15%
                     break;
-                case UserAnswerState.AlmostAllRight:
-                    currentInterval = ease * currentInterval * intervalModifier;
+                case UserAnswerState.AlmostAllRight: //ease invariata, ma è da valutare se mettere un -5%
+                    currentInterval = cardProprieties.cardEase * currentInterval * intervalModifier;
                     cardProprieties.cardKnowledge = 2;
                     break;
                 case UserAnswerState.AllRight:
-                    currentInterval = ease * currentInterval * easyBonus;
-                    ease = ease > minimumEase ? ease += 0.15f : minimumEase; //ease +15%
+                    currentInterval = cardProprieties.cardEase * currentInterval * easyBonus;
+                    cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase += 0.15f : minimumEase; //ease +15%
                     cardProprieties.cardKnowledge = 3;
                     break;
             }
@@ -197,11 +198,11 @@ public class MemoryIndex : MonoBehaviour
                     currentInterval = easyInterval;
                     cardProprieties.cardState = "GraduatedCard";
                     cardProprieties.cardKnowledge = 1;
-
                     break;
             }
         }
 
+        Debug.Log("Card after answer \n" + question.Info + "       State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
         SetExpiringDate();
 
     }
@@ -213,15 +214,13 @@ public class MemoryIndex : MonoBehaviour
     /*
 
         COSA DEVO FARE
-        1) Creare le funzioni su CheckAnswers() in question che chiamino l'updatememoryindex
-        2) Verificare con dei debug, che l'update effettivamente funzioni
-        3) Creare il codice di SetExpiringDate*
-        4) creare il sorting sulla base delle proprietà delle delle loadedquestion in questo awake
-        5) creare il codice di isLeech
+        1) Creare il codice di SetExpiringDate*
+        2) creare il sorting sulla base delle proprietà delle delle loadedquestion in questo awake*****
+        3) creare il codice di isLeech e decidere cosa fare con ste leech
         
 
 
-        *L’algoritmo deve chiedere prima quelle che hanno il tempo scaduto/ (in modo random), poi andare in ordine sulla base di quanto tempo manca.
+        *****L’algoritmo deve chiedere prima quelle che hanno il tempo scaduto/ (in modo random), poi andare in ordine sulla base di quanto tempo manca.
        
 
         DA TENERE PRESENTE A LIVELLO DI DESIGN
