@@ -88,6 +88,11 @@ public class GameManager : MonoBehaviour
         var questions_matching_filename_sorted = (from q in questionsToSort orderby q.cardProprieties.cardExpDate select q).ToList();
         questions.AddRange(questions_matching_filename_sorted);
 
+        foreach (var question in questions_matching_filename_sorted)
+        {
+            Debug.Log(question.Info + "||State:" + question.cardProprieties.cardState + ", Knowledge: " + question.cardProprieties.cardKnowledge + ", currentInterval: " + question.cardProprieties.cardCurrentInterval + ", ease: " + question.cardProprieties.cardEase + ", expdate: " + question.cardProprieties.cardExpDate + ", leech level: " + question.cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + question.cardProprieties.isLeech);
+        }
+
         //creating the autocomplete list with all the answers (and synonyms)
         foreach (var question in questions_matching_filename_sorted)
         {
@@ -137,7 +142,6 @@ public class GameManager : MonoBehaviour
 
             GameObject.Find("Managers").GetComponent<UIManager>().ShowPickedAnswers(PickedAnswers);
         }
-
         else
         {
             PickedAnswers.Add(newAnswer);

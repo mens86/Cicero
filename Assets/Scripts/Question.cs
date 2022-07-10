@@ -68,24 +68,6 @@ public class Question
 
         }
 
-        /*
-        Debug.Log("-----------------------");
-        Debug.Log("Risposte giuste");
-        foreach (var x in actualAnswers)
-        {
-            Debug.Log(x);
-        }
-        Debug.Log("-----------------------");
-
-        Debug.Log("Risposte selezionate");
-        foreach (var x in pickedAnswers)
-        {
-            Debug.Log(x);
-        }
-        Debug.Log("-----------------------");
-        */
-
-
         float scoreMultiplier = 0;
         var qq = actualAnswers.Except(pickedAnswers).ToList();
         var pp = pickedAnswers.Except(actualAnswers).ToList();
@@ -151,7 +133,23 @@ public class CardProprieties
     public float cardEase = 2.5f; //moltiplicatore che allarga la scadenza delle carte facili e accorcia quella delle difficili
     public float cardCurrentInterval = 0.0f;
     public DateTime cardExpDate;
+
     public int cardCurrentLeechLevel = 0; //attuale numero di volte consecutive in cui è stata sbagliata una carta //questo devo pensare a come cazzo fare il consecutive
     public bool isLeech = false;
+    public int leechTreshold = 6; //numero di volte consecutive in cui sbagliamo completamente una carta prima che diventi "sanguisuga"
+    public void LeechCount(int leechLevel)
+    {
+        cardCurrentLeechLevel += leechLevel;
+        cardCurrentLeechLevel = (cardCurrentLeechLevel < leechTreshold) ? cardCurrentLeechLevel : leechTreshold;
+        cardCurrentLeechLevel = (cardCurrentLeechLevel > 0) ? cardCurrentLeechLevel : 0;
+        isLeech = (cardCurrentLeechLevel == leechTreshold) ? true : false;
+
+
+        if (isLeech) //what to do if is leech - 4 days interval
+        {
+            MemoryIndex memoryIndex = GameObject.Find("MemoryIndex").GetComponent<MemoryIndex>();
+            memoryIndex.currentInterval = 345600;
+        }
+    }
 }
 

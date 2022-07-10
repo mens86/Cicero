@@ -19,7 +19,7 @@ public class MemoryIndex : MonoBehaviour
 
     public DeckSelector deckSelector;
 
-    public float currentInterval; // quanto tempo massimo passerà prima che la carta debba per forza ripresentarsi  (sommato all' "in questo momento" dà la data di scadenza)
+    public float currentInterval;
     public float intervalModifier = 1.0f; //se è minore di 1 riduce tutti i tempi di attesa prima che la carta debba ripresentarsi
 
     //Learning/New State currentinterval modifiers
@@ -38,9 +38,6 @@ public class MemoryIndex : MonoBehaviour
     public float newInterval = 0.0f; //settato a 0 di default serve a far ricominciare una carta se finisce in relearning [il tizio preferisce 0.20, per non far ricominciare una carta da 0 se è per sbaglio finita in relearning. Ha senso, ma forse allora potremmo togliere un po' di interval, se in relearning si fa male]
     public int minimumInterval = 86400; //un giorno in secondi - se new interval*currentinterval fa meno di un giorno, setti a un giorno. Se metti la cosa della riga sopra forse non serve.
 
-    //Leeches
-    public int leechTreshold = 4; //numero di volte consecutive in cui sbagliamo completamente una carta prima che diventi "sanguisuga"
-    public bool isLeech = false; //stabilisce se una carta è sanguisuga sulla base dell'identità tra CurrentLeechInt e il LeechTreshold [cosa farsi se isLeexh è true, deciderò]  
 
 
 
@@ -94,7 +91,7 @@ public class MemoryIndex : MonoBehaviour
     {
         CardProprieties cardProprieties = question.cardProprieties;
 
-        Debug.Log("Card before answer \n" + question.Info + "       State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
+        Debug.Log("BEFORE -->" + question.Info + "||State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", currentInterval: " + cardProprieties.cardCurrentInterval + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
 
         if (cardProprieties.cardState == "NewCard")
         {
@@ -104,6 +101,7 @@ public class MemoryIndex : MonoBehaviour
                     currentInterval = learningStep0;
                     cardProprieties.cardState = "LearningCard";
                     cardProprieties.cardKnowledge = 1;
+                    cardProprieties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
                     currentInterval = learningStep1;
@@ -119,6 +117,7 @@ public class MemoryIndex : MonoBehaviour
                     currentInterval = easyInterval;
                     cardProprieties.cardState = "GraduatedCard";
                     cardProprieties.cardKnowledge = 3;
+                    cardProprieties.LeechCount(-1);
                     break;
             }
 
@@ -131,6 +130,7 @@ public class MemoryIndex : MonoBehaviour
                     currentInterval = learningStep0;
                     cardProprieties.cardState = "LearningCard";
                     cardProprieties.cardKnowledge = 1;
+                    cardProprieties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
                     currentInterval = learningStep1;
@@ -146,6 +146,7 @@ public class MemoryIndex : MonoBehaviour
                     currentInterval = easyInterval;
                     cardProprieties.cardState = "GraduatedCard";
                     cardProprieties.cardKnowledge = 3;
+                    cardProprieties.LeechCount(-1);
                     break;
             }
         }
@@ -158,6 +159,7 @@ public class MemoryIndex : MonoBehaviour
                     cardProprieties.cardState = "RelearningCard";
                     cardProprieties.cardKnowledge = 1;
                     cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase -= 0.20f : minimumEase; //ease -20%
+                    cardProprieties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
                     currentInterval = 1.2f * currentInterval * intervalModifier;
@@ -173,6 +175,7 @@ public class MemoryIndex : MonoBehaviour
                     currentInterval = cardProprieties.cardEase * cardProprieties.cardCurrentInterval * easyBonus;
                     cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase += 0.15f : minimumEase; //ease +15%
                     cardProprieties.cardKnowledge = 3;
+                    cardProprieties.LeechCount(-1);
                     break;
             }
         }
@@ -183,6 +186,7 @@ public class MemoryIndex : MonoBehaviour
                 case UserAnswerState.AllWrong:
                     currentInterval = relearningStep;
                     cardProprieties.cardKnowledge = 1;
+                    cardProprieties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
                     currentInterval = 1.5f * relearningStep;
@@ -197,6 +201,7 @@ public class MemoryIndex : MonoBehaviour
                     currentInterval = easyInterval;
                     cardProprieties.cardState = "GraduatedCard";
                     cardProprieties.cardKnowledge = 1;
+                    cardProprieties.LeechCount(-1);
                     break;
             }
         }
@@ -204,7 +209,7 @@ public class MemoryIndex : MonoBehaviour
         cardProprieties.cardCurrentInterval = currentInterval;
         cardProprieties.cardExpDate = SetExpiringDate();
 
-        Debug.Log("Card after answer \n" + question.Info + "       State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
+        Debug.Log("AFTER -->" + question.Info + "||State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", currentInterval: " + cardProprieties.cardCurrentInterval + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
 
 
     }
