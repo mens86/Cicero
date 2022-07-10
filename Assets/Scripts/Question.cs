@@ -148,7 +148,8 @@ public class CardProprieties
     public string cardState = "NewCard";
     public int cardKnowledge = 0; // questo numero serve a mostrare all'utente la % di conoscenza del mazzo
     public float cardEase = 2.5f; //moltiplicatore che allarga la scadenza delle carte facili e accorcia quella delle difficili
-    public int cardExpDate = 999;
+    public float cardCurrentInterval = 0.0f;
+    public DateTime cardExpDate;
     public int cardCurrentLeechLevel = 0; //attuale numero di volte consecutive in cui è stata sbagliata una carta //questo devo pensare a come cazzo fare il consecutive
     public bool isLeech = false;
 

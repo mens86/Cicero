@@ -55,7 +55,7 @@ public class MemoryIndex : MonoBehaviour
         }
         else
         {
-            Debug.Log("[Success] Loaded questions " + persistentQuestionList.Count);
+            //Debug.Log("[Success] Loaded questions " + persistentQuestionList.Count);
         }
     }
 
@@ -90,7 +90,6 @@ public class MemoryIndex : MonoBehaviour
 
 
 
-    //La question che ci arriva qui deve essere pescata da persistentQuestionsList
     public void UpdateMemoryIndex(Question question, UserAnswerState WhatUserAnswered)
     {
         CardProprieties cardProprieties = question.cardProprieties;
@@ -167,11 +166,11 @@ public class MemoryIndex : MonoBehaviour
                     cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase -= 0.15f : minimumEase; //ease -15%
                     break;
                 case UserAnswerState.AlmostAllRight: //ease invariata, ma è da valutare se mettere un -5%
-                    currentInterval = cardProprieties.cardEase * currentInterval * intervalModifier;
+                    currentInterval = cardProprieties.cardEase * cardProprieties.cardCurrentInterval * intervalModifier;
                     cardProprieties.cardKnowledge = 2;
                     break;
                 case UserAnswerState.AllRight:
-                    currentInterval = cardProprieties.cardEase * currentInterval * easyBonus;
+                    currentInterval = cardProprieties.cardEase * cardProprieties.cardCurrentInterval * easyBonus;
                     cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase += 0.15f : minimumEase; //ease +15%
                     cardProprieties.cardKnowledge = 3;
                     break;
@@ -190,7 +189,7 @@ public class MemoryIndex : MonoBehaviour
                     cardProprieties.cardKnowledge = 1;
                     break;
                 case UserAnswerState.AlmostAllRight:
-                    currentInterval = newInterval * currentInterval;
+                    currentInterval = newInterval * cardProprieties.cardCurrentInterval;
                     cardProprieties.cardState = "GraduatedCard";
                     cardProprieties.cardKnowledge = 1;
                     break;
@@ -202,21 +201,28 @@ public class MemoryIndex : MonoBehaviour
             }
         }
 
+        cardProprieties.cardCurrentInterval = currentInterval;
+        cardProprieties.cardExpDate = SetExpiringDate();
+
         Debug.Log("Card after answer \n" + question.Info + "       State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
-        SetExpiringDate();
+
 
     }
 
-    void SetExpiringDate()
+    DateTime SetExpiringDate()
     {
+        DateTime currentTime = System.DateTime.UtcNow.ToLocalTime();
+        DateTime expirationTime = currentTime.AddSeconds(currentInterval);
 
+        return expirationTime;
     }
     /*
 
         COSA DEVO FARE
-        1) Creare il codice di SetExpiringDate*
-        2) creare il sorting sulla base delle proprietà delle delle loadedquestion in questo awake*****
-        3) creare il codice di isLeech e decidere cosa fare con ste leech
+        
+        1) creare il sorting sulla base delle proprietà delle delle loadedquestion in questo awake*****
+        2) creare il codice di isLeech e decidere cosa fare con ste leech
+        3) creare livelli di mastery dei mazzi visibili nel menù iniziale
         
 
 
@@ -224,7 +230,7 @@ public class MemoryIndex : MonoBehaviour
        
 
         DA TENERE PRESENTE A LIVELLO DI DESIGN
-        1.Poiché per me "newCard" è solo uno stato di studio (), a differenza che in anki, farò sottomazzi piccolini studiabili a gruppi, stile brainscape, che è la cosa migliore
+        1.Poiché per me "newCard" è solo uno stato di studio (), a differenza che in anki, farò sottomazzi piccolini studiabili a gruppi, stile brainscape
         2.SI PUO' immaginare una mastery che decade nel tempo? Così si è portati a riprenderre mazzi portati al 100%
 
     */

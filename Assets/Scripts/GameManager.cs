@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        Debug.Log("Decks initialized " + selectedDecks.Count);
+        //Debug.Log("Decks initialized " + selectedDecks.Count);
     }
 
     void Start()
