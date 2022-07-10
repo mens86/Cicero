@@ -46,6 +46,20 @@ public class Autocomplete : MonoBehaviour
         currentTextInInputField = newText;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private void ClearResults()
     {
         // Reverse loop since you destroy children

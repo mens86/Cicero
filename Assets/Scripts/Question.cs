@@ -53,6 +53,7 @@ public class Question
 
 
 
+
     public (UserAnswersScenario, float) CheckAnswers(List<string> pickedAnswers)
     {
         List<string> actualAnswers = new List<string>();
@@ -152,6 +153,5 @@ public class CardProprieties
     public DateTime cardExpDate;
     public int cardCurrentLeechLevel = 0; //attuale numero di volte consecutive in cui è stata sbagliata una carta //questo devo pensare a come cazzo fare il consecutive
     public bool isLeech = false;
-
 }
 

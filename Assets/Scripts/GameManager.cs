@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     {
         get
         {
-            return (FinishedQuestions.Count < questions.Count) ? false : true;
+            return (FinishedQuestions.Count < questions.Count && FinishedQuestions.Count < 10) ? false : true;
         }
     }
 
@@ -70,18 +70,23 @@ public class GameManager : MonoBehaviour
     {
         events.CurrentFinalScore = 0;
         InitQuestions_WithSelectedDecks(SelectedDecks_names);
-
-        // questions = FindObjectOfType<ParserQuestions_csv>().ParseQuestionsFile(QuestionsFileNames);
     }
 
 
     void InitQuestions_WithSelectedDecks(List<TextAsset> selectedDecks)
     {
+        List<Question> questionsToSort = new List<Question>();
         foreach (var question_filename in selectedDecks)
         {
             var selectedDeck_name = question_filename.name;
             List<Question> questions_matching_filename = memoryIndex.persistentQuestionList.Where(q => q.question_filename == selectedDeck_name).ToList();
-            questions.AddRange(questions_matching_filename);
+
+
+
+
+
+            questionsToSort.AddRange(questions_matching_filename);
+
 
             //create the autocomplete list with all the answers (with all synonyms)
             foreach (var question in questions_matching_filename)
@@ -95,6 +100,11 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
+        //sorting questions by date
+        var questions_matching_filename_sorted = (from q in questionsToSort orderby q.cardProprieties.cardExpDate select q).ToList();
+        questions.AddRange(questions_matching_filename_sorted);
+
         //Debug.Log("Decks initialized " + selectedDecks.Count);
     }
 
@@ -103,7 +113,6 @@ public class GameManager : MonoBehaviour
         events.StartupHighScore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
 
         timerDefaultColor = timerText.color;
-
         timerStateParaHash = Animator.StringToHash("TimerState");
 
         var seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
@@ -160,7 +169,9 @@ public class GameManager : MonoBehaviour
         GameObject.Find("Managers").GetComponent<UIManager>().ErasePickedAnswers(PickedAnswers);
         EraseAnswers();
         GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
-        var question = GetRandomQuestion();
+        //var question = GetRandomQuestion();
+        var question = questions[currentQuestion];
+
 
         if (events.UpdateQuestionUI != null)
         {
@@ -216,6 +227,7 @@ public class GameManager : MonoBehaviour
         float currentResolutionDelayTime = GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime;
         if (!IsFinished)
         {
+            currentQuestion += 1;
             StartCoroutine(ExecuteAfterTime(currentResolutionDelayTime));
             IEnumerator ExecuteAfterTime(float time)
             {
@@ -296,30 +308,30 @@ public class GameManager : MonoBehaviour
 
 
 
+    /*
 
-
-    Question GetRandomQuestion()
-    {
-        var randomIndex = GetRandomQuestionIndex();
-        currentQuestion = randomIndex;
-
-        return questions[currentQuestion];
-    }
-    int GetRandomQuestionIndex()
-    {
-        var random = 0;
-        if (FinishedQuestions.Count < questions.Count)
+        Question GetRandomQuestion()
         {
-            do
-            {
-                random = UnityEngine.Random.Range(0, questions.Count);
-            } while (FinishedQuestions.Contains(random) || random == currentQuestion);
+            var randomIndex = GetRandomQuestionIndex();
+            currentQuestion = randomIndex;
+
+            return questions[currentQuestion];
         }
-        return random;
-    }
+        int GetRandomQuestionIndex()
+        {
+            var random = 0;
+            if (FinishedQuestions.Count < questions.Count)
+            {
+                do
+                {
+                    random = UnityEngine.Random.Range(0, questions.Count);
+                } while (FinishedQuestions.Contains(random) || random == currentQuestion);
+            }
+            return random;
+        }
 
 
-
+    */
 
     public void RestartGame()
     {
