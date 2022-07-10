@@ -145,7 +145,7 @@ public class UIManager : MonoBehaviour
 
     void UpdateResUI(ResolutionScreenType type, float score)
     {
-        var highscore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
+        var highscore = PlayerPrefs.GetFloat(GameUtility.SavePrefKey);
 
 
         var answersToCurrentQuestion = GameObject.Find("Managers").GetComponent<GameManager>().questions[GameObject.Find("Managers").GetComponent<GameManager>().currentQuestion].Answers;

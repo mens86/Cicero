@@ -76,48 +76,38 @@ public class GameManager : MonoBehaviour
     void InitQuestions_WithSelectedDecks(List<TextAsset> selectedDecks)
     {
         List<Question> questionsToSort = new List<Question>();
+
         foreach (var question_filename in selectedDecks)
         {
             var selectedDeck_name = question_filename.name;
             List<Question> questions_matching_filename = memoryIndex.persistentQuestionList.Where(q => q.question_filename == selectedDeck_name).ToList();
-
-
-
-
-
             questionsToSort.AddRange(questions_matching_filename);
-
-
-            //create the autocomplete list with all the answers (with all synonyms)
-            foreach (var question in questions_matching_filename)
-            {
-                foreach (var answer in question.Answers)
-                {
-                    foreach (var synonym in answer.groupOfSynonyms)
-                    {
-                        autocomplete.allAnswers.Add(synonym);
-                    }
-                }
-            }
         }
 
         //sorting questions by date
         var questions_matching_filename_sorted = (from q in questionsToSort orderby q.cardProprieties.cardExpDate select q).ToList();
         questions.AddRange(questions_matching_filename_sorted);
 
+        //creating the autocomplete list with all the answers (and synonyms)
+        foreach (var question in questions_matching_filename_sorted)
+        {
+            foreach (var answer in question.Answers)
+            {
+                foreach (var synonym in answer.groupOfSynonyms)
+                {
+                    autocomplete.allAnswers.Add(synonym);
+                }
+            }
+        }
         //Debug.Log("Decks initialized " + selectedDecks.Count);
     }
 
     void Start()
     {
-        events.StartupHighScore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
+        events.StartupHighScore = PlayerPrefs.GetFloat(GameUtility.SavePrefKey);
 
         timerDefaultColor = timerText.color;
         timerStateParaHash = Animator.StringToHash("TimerState");
-
-        var seed = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
-        UnityEngine.Random.InitState(seed);
-
         Display();
     }
 
@@ -346,7 +336,7 @@ public class GameManager : MonoBehaviour
     /// Function that is called to set new highscore if game score is higher
     private void SetHighScore()
     {
-        var highscore = PlayerPrefs.GetInt(GameUtility.SavePrefKey);
+        var highscore = PlayerPrefs.GetFloat(GameUtility.SavePrefKey);
         if (highscore < events.CurrentFinalScore)
         {
             PlayerPrefs.SetFloat(GameUtility.SavePrefKey, events.CurrentFinalScore);

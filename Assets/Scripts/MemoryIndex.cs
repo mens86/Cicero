@@ -220,15 +220,12 @@ public class MemoryIndex : MonoBehaviour
 
         COSA DEVO FARE
         
-        1)  creare il sorting sulla base delle proprietà delle delle loadedquestion in questo awake*****
-        2)  creare il codice di isLeech e decidere cosa fare con ste leech
-        3)  creare livelli di mastery dei mazzi visibili nel menù iniziale. 
+
+        1)  creare il codice di isLeech e decidere cosa fare con ste leech
+        2)  creare livelli di mastery dei mazzi visibili nel menù iniziale. 
             Ricorda di tener presente anche il numero di risposte di ogni domanda: 
             sapere una domanda con 4 risposte vale più che saperne una singola
-        
 
-
-        *****L’algoritmo deve chiedere prima quelle che hanno il tempo scaduto/ (in modo random), poi andare in ordine sulla base di quanto tempo manca.
        
 
         DA TENERE PRESENTE A LIVELLO DI DESIGN

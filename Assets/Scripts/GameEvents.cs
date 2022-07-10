@@ -24,6 +24,6 @@ public class GameEvents : ScriptableObject
     [HideInInspector]
     public float CurrentFinalScore = 0;
     [HideInInspector]
-    public int StartupHighScore = 0;
+    public float StartupHighScore = 0;
 
 }
