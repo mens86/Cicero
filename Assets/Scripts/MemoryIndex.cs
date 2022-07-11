@@ -208,6 +208,7 @@ public class MemoryIndex : MonoBehaviour
 
         cardProprieties.cardCurrentInterval = currentInterval;
         cardProprieties.cardExpDate = SetExpiringDate();
+        cardProprieties.cardKnowledge = cardProprieties.cardKnowledge * question.Answers.Length;
 
         Debug.Log("AFTER -->" + question.Info + "||State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", currentInterval: " + cardProprieties.cardCurrentInterval + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
 
@@ -226,8 +227,7 @@ public class MemoryIndex : MonoBehaviour
         COSA DEVO FARE
         
 
-        1)  creare il codice di isLeech e decidere cosa fare con ste leech
-        2)  creare livelli di mastery dei mazzi visibili nel menù iniziale. 
+        1)  creare livelli di mastery dei mazzi visibili nel menù iniziale. 
             Ricorda di tener presente anche il numero di risposte di ogni domanda: 
             sapere una domanda con 4 risposte vale più che saperne una singola
 

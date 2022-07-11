@@ -1413,8 +1413,6 @@ MonoBehaviour:
   relearningStep: 600
   newInterval: 0
   minimumInterval: 86400
-  leechTreshold: 4
-  isLeech: 0
 --- !u!4 &741817355
 Transform:
   m_ObjectHideFlags: 0
@@ -4803,6 +4801,7 @@ MonoBehaviour:
   - {fileID: 4900000, guid: e69e7af14967f9c4a8a7b39c3acc5d7b, type: 3}
   - {fileID: 4900000, guid: 8408a6bfbae4c8643ba78bd50679389f, type: 3}
   - {fileID: 4900000, guid: 7c80b43196e10784fab105e450c1e74f, type: 3}
+  memoryIndex: {fileID: 741817354}
   margins: 10
   deckSelectPrefab: {fileID: 3487371901643285509, guid: cd08fc2c32dc20d419da027d5ea5dbd4, type: 3}
   decksContentArea: {fileID: 1973691910}

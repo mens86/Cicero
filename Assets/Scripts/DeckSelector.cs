@@ -5,11 +5,12 @@ using System.IO;
 using TMPro;
 using UnityEngine.Networking;
 using System.Linq;
-
+using System;
 
 public class DeckSelector : MonoBehaviour
 {
     public List<TextAsset> availableDecks;
+    public MemoryIndex memoryIndex;
 
     [SerializeField] float margins;
     [SerializeField] AnswerData deckSelectPrefab;
@@ -52,6 +53,7 @@ public class DeckSelector : MonoBehaviour
 
             AnswerData deck = (AnswerData)Instantiate(deckSelectPrefab, DecksContentArea);
             deck.infoTextObject.text = availableDecks[i].name;
+            deck.MasteryNumber.text = CalculateMasteryNumber(deck);
 
             deck.Rect.anchoredPosition = new Vector2(0, offset);
             offset -= (deck.Rect.sizeDelta.y + margins);
@@ -59,6 +61,22 @@ public class DeckSelector : MonoBehaviour
         }
     }
 
+    private string CalculateMasteryNumber(AnswerData deck)
+    {
+        List<Question> questionsOfDeck = memoryIndex.persistentQuestionList.Where(q => q.question_filename == deck.infoTextObject.text).ToList();
+        int totalDeckKnowledge = 0;
+        int currentDeckKnowledge = 0;
+
+        foreach (var q in questionsOfDeck)
+        {
+            totalDeckKnowledge += q.Answers.Length * 3;
+            currentDeckKnowledge += q.cardProprieties.cardKnowledge;
+        }
+
+        float percentageOfKnowledge = (currentDeckKnowledge * 100) / totalDeckKnowledge;
+
+        return percentageOfKnowledge.ToString() + "%";
+    }
 
     public void StartGame()
     {
