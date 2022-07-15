@@ -23,15 +23,19 @@ public class ParserQuestions_csv : MonoBehaviour
             filecontent = filecontent.Replace("\r", "");
 
             string[] lines = filecontent.Split('\n');
-            foreach (var currLine in lines)
+            for (int u = 2; u < lines.Length; u++)
             {
-                Question parsedQuestion = ParseQuestion(currLine);
-                if (parsedQuestion != null)
                 {
-                    parsedQuestion.question_filename = txt.name;
-                    result.Add(parsedQuestion);
+                    Question parsedQuestion = ParseQuestion(lines[u]);
+                    if (parsedQuestion != null)
+                    {
+                        parsedQuestion.question_filename = txt.name;
+                        result.Add(parsedQuestion);
+                    }
                 }
+
             }
+
         }
 
         return result;

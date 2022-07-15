@@ -4803,7 +4803,8 @@ MonoBehaviour:
   - {fileID: 4900000, guid: 7c80b43196e10784fab105e450c1e74f, type: 3}
   memoryIndex: {fileID: 741817354}
   margins: 10
-  deckSelectPrefab: {fileID: 3487371901643285509, guid: cd08fc2c32dc20d419da027d5ea5dbd4, type: 3}
+  deckSelectPrefab: {fileID: 3487371901643285509, guid: f490f96552bc6b84d8347fca953da70b, type: 3}
+  CategoriesPrefab: {fileID: -796896499452595246, guid: cd08fc2c32dc20d419da027d5ea5dbd4, type: 3}
   decksContentArea: {fileID: 1973691910}
   Title: {fileID: 769724565}
   MenuCanvas: {fileID: 1716009848}
@@ -4811,6 +4812,7 @@ MonoBehaviour:
   Managers: {fileID: 154132953}
   events: {fileID: 11400000, guid: 5f309094ecee4d043918ddbc3f048730, type: 2}
   PickedDecks_answersData: []
+  listOfCategories: []
 --- !u!1 &1826771166
 GameObject:
   m_ObjectHideFlags: 0
@@ -5346,7 +5348,7 @@ GameObject:
   - component: {fileID: 1973691912}
   - component: {fileID: 1973691911}
   m_Layer: 5
-  m_Name: Decks
+  m_Name: DecksContentArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

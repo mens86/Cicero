@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using TMPro;
-using UnityEngine.Networking;
+using UnityEngine.UI;
 using System.Linq;
 using System;
+
+
+
 
 public class DeckSelector : MonoBehaviour
 {
@@ -14,6 +17,7 @@ public class DeckSelector : MonoBehaviour
 
     [SerializeField] float margins;
     [SerializeField] AnswerData deckSelectPrefab;
+    [SerializeField] Titles CategoriesPrefab;
     [SerializeField] RectTransform decksContentArea;
     public RectTransform DecksContentArea { get { return decksContentArea; } }
     [SerializeField] TextMeshProUGUI Title = null;
@@ -24,7 +28,8 @@ public class DeckSelector : MonoBehaviour
     [SerializeField] GameEvents events = null;
 
     public List<AnswerData> PickedDecks_answersData = new List<AnswerData>();
-
+    public List<string> listOfCategories = new List<string>();
+    private char delimiter = ';';
 
 
     void OnEnable()
@@ -40,25 +45,66 @@ public class DeckSelector : MonoBehaviour
 
     void Start()
     {
+        listOfCategories = PopulateCategories(availableDecks);
         ShowDecks();
+
     }
 
+    public List<string> PopulateCategories(List<TextAsset> decks_textAssets)
+    {
+        List<string> list = new List<string>();
+        for (int i = 0; i < decks_textAssets.Count; i++)
+        {
+            TextAsset txt = decks_textAssets[i];
+            string filecontent = txt.text;
+            filecontent = filecontent.Replace("\r", "");
+
+            string[] lines = filecontent.Split('\n');
+            string[] cells = lines[0].Split(delimiter);
+            if (!list.Contains(cells[1]))
+            {
+                list.Add(cells[1]);
+            }
+        }
+        return list;
+    }
 
     public void ShowDecks()
     {
         float offset = 0 - margins;
 
-        for (int i = 0; i < availableDecks.Count; i++)
+
+        for (int i = 0; i < listOfCategories.Count; i++)
         {
 
-            AnswerData deck = (AnswerData)Instantiate(deckSelectPrefab, DecksContentArea);
-            deck.infoTextObject.text = availableDecks[i].name;
-            deck.MasteryNumber.text = CalculateMasteryNumber(deck);
+            Titles Title = (Titles)Instantiate(CategoriesPrefab, DecksContentArea);
+            Title.Title.text = listOfCategories[i];
 
-            deck.Rect.anchoredPosition = new Vector2(0, offset);
-            offset -= (deck.Rect.sizeDelta.y + margins);
+            Title.rectTransf.anchoredPosition = new Vector2(0, offset);
+            offset -= (Title.rectTransf.sizeDelta.y + margins);
             DecksContentArea.sizeDelta = new Vector2(DecksContentArea.sizeDelta.x, offset * -1);
+
+            for (int u = 0; u < availableDecks.Count; u++)
+            {
+
+
+                List<TextAsset> listForMethodBelow = new List<TextAsset>();
+                listForMethodBelow.Add(availableDecks[u]);
+                if (PopulateCategories(listForMethodBelow)[0] == Title.Title.text)
+                {
+                    AnswerData deck = (AnswerData)Instantiate(deckSelectPrefab, DecksContentArea);
+                    deck.infoTextObject.text = availableDecks[u].name;
+                    //deck.MasteryNumber.text = CalculateMasteryNumber(deck);
+
+                    deck.Rect.anchoredPosition = new Vector2(0, offset);
+                    offset -= (deck.Rect.sizeDelta.y + margins);
+                    DecksContentArea.sizeDelta = new Vector2(DecksContentArea.sizeDelta.x, offset * -1);
+                }
+
+
+            }
         }
+
     }
 
     private string CalculateMasteryNumber(AnswerData deck)
@@ -141,12 +187,5 @@ public class DeckSelector : MonoBehaviour
         }
 
     }
-
-
-
-
-
-
-
 
 }

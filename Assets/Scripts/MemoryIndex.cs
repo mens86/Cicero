@@ -185,7 +185,7 @@ public class MemoryIndex : MonoBehaviour
             {
                 case UserAnswerState.AllWrong:
                     currentInterval = relearningStep;
-                    cardProprieties.cardKnowledge = 1;
+                    cardProprieties.cardKnowledge = 0;
                     cardProprieties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
@@ -222,23 +222,6 @@ public class MemoryIndex : MonoBehaviour
 
         return expirationTime;
     }
-    /*
-
-        COSA DEVO FARE
-        
-
-        1)  creare livelli di mastery dei mazzi visibili nel menù iniziale. 
-            Ricorda di tener presente anche il numero di risposte di ogni domanda: 
-            sapere una domanda con 4 risposte vale più che saperne una singola
-
-       
-
-        DA TENERE PRESENTE A LIVELLO DI DESIGN
-        1.Poiché per me "newCard" è solo uno stato di studio (), a differenza che in anki, farò sottomazzi piccolini studiabili a gruppi, stile brainscape
-        2.SI PUO' immaginare una mastery che decade nel tempo? Così si è portati a riprenderre mazzi portati al 100%
-
-    */
-
 
     [ContextMenu("delete questions file")]
     [Button]
