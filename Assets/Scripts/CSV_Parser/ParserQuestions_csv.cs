@@ -25,14 +25,14 @@ public class ParserQuestions_csv : MonoBehaviour
             string[] lines = filecontent.Split('\n');
             for (int u = 2; u < lines.Length; u++)
             {
+
+                Question parsedQuestion = ParseQuestion(lines[u]);
+                if (parsedQuestion != null)
                 {
-                    Question parsedQuestion = ParseQuestion(lines[u]);
-                    if (parsedQuestion != null)
-                    {
-                        parsedQuestion.question_filename = txt.name;
-                        result.Add(parsedQuestion);
-                    }
+                    parsedQuestion.question_filename = txt.name;
+                    result.Add(parsedQuestion);
                 }
+
 
             }
 

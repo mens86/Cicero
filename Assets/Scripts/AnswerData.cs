@@ -11,6 +11,7 @@ public class AnswerData : MonoBehaviour
     [SerializeField] public Image toggle;
     [SerializeField] public TextMeshProUGUI MasteryNumber;
 
+
     [Header("Textures")]
     [SerializeField] Sprite uncheckedToggle;
     [SerializeField] Sprite checkedToggle;

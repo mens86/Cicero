@@ -82,6 +82,7 @@ public class MemoryIndex : MonoBehaviour
             stream.Close();
             return obj;
         }
+        Debug.Log("Sono qui. Male");
         return null;
     }
 

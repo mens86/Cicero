@@ -4797,16 +4797,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   availableDecks:
   - {fileID: 4900000, guid: a966188006d8c8e4eb873b9f58ceb9c0, type: 3}
+  - {fileID: 4900000, guid: 7c80b43196e10784fab105e450c1e74f, type: 3}
+  - {fileID: 4900000, guid: 8408a6bfbae4c8643ba78bd50679389f, type: 3}
   - {fileID: 4900000, guid: 14c11eb1ec6612143b8b4b72a0669ffe, type: 3}
   - {fileID: 4900000, guid: e69e7af14967f9c4a8a7b39c3acc5d7b, type: 3}
-  - {fileID: 4900000, guid: 8408a6bfbae4c8643ba78bd50679389f, type: 3}
-  - {fileID: 4900000, guid: 7c80b43196e10784fab105e450c1e74f, type: 3}
   memoryIndex: {fileID: 741817354}
-  margins: 10
+  margins: 0
   deckSelectPrefab: {fileID: 3487371901643285509, guid: f490f96552bc6b84d8347fca953da70b, type: 3}
-  CategoriesPrefab: {fileID: -796896499452595246, guid: cd08fc2c32dc20d419da027d5ea5dbd4, type: 3}
+  CategoriesPrefab: {fileID: 8241985515421968388, guid: cd08fc2c32dc20d419da027d5ea5dbd4, type: 3}
   decksContentArea: {fileID: 1973691910}
-  Title: {fileID: 769724565}
+  CategoryName: {fileID: 0}
   MenuCanvas: {fileID: 1716009848}
   GameCanvas: {fileID: 1135125318}
   Managers: {fileID: 154132953}
@@ -5409,7 +5409,7 @@ MonoBehaviour:
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
+  m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
