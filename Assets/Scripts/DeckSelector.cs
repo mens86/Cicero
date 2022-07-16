@@ -82,12 +82,10 @@ public class DeckSelector : MonoBehaviour
     public void ShowCategories()
     {
         listOfCategories = PopulateCategories(availableDecks);
-        Debug.Log(listOfCategories.Count);
         for (int i = 0; i < listOfCategories.Count; i++)
         {
             DeckCategories Category = (DeckCategories)Instantiate(CategoriesPrefab, DecksContentArea);
             Category.CategoryName.text = listOfCategories[i];
-            //Category.name = Category.CategoryName.text;
             ShowDecks(Category);
         }
     }
@@ -114,13 +112,12 @@ public class DeckSelector : MonoBehaviour
             Category.expanded = false;
             foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
             {
-                for (int u = 0; u < availableDecks.Count; u++)
+
+                if (gameObj.name == Category.CategoryName.text)
                 {
-                    if (gameObj.name == Category.CategoryName.text)
-                    {
-                        gameObj.transform.localScale = new Vector3(0, 0, 0);
-                        gameObj.GetComponent<RectTransform>().sizeDelta = new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x, 0);
-                    }
+                    gameObj.transform.localScale = new Vector3(0, 0, 0);
+                    gameObj.GetComponent<RectTransform>().sizeDelta = new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x, 0);
+
                 }
             }
         }
@@ -129,16 +126,44 @@ public class DeckSelector : MonoBehaviour
             Category.expanded = true;
             foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
             {
-                for (int u = 0; u < availableDecks.Count; u++)
+
+                if (gameObj.name == Category.CategoryName.text)
                 {
-                    if (gameObj.name == Category.CategoryName.text)
-                    {
-                        gameObj.transform.localScale = new Vector3(1, 1, 1);
-                        gameObj.GetComponent<RectTransform>().sizeDelta = new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x, 130);
-                    }
+                    gameObj.transform.localScale = new Vector3(1, 1, 1);
+                    gameObj.GetComponent<RectTransform>().sizeDelta = new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x, 130);
+                }
+
+            }
+        }
+    }
+
+    public void SelectAllButton(DeckCategories Category)
+    {
+        bool atLeastOneWasUnchecked = false;
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (gameObj.name == Category.CategoryName.text)
+            {
+
+                if (!gameObj.GetComponent<AnswerData>().Checked)
+                {
+                    atLeastOneWasUnchecked = true;
+                    gameObj.GetComponent<AnswerData>().SetStateToChecked();
                 }
             }
         }
+
+        if (!atLeastOneWasUnchecked)
+        {
+            foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+            {
+                if (gameObj.name == Category.CategoryName.text)
+                {
+                    gameObj.GetComponent<AnswerData>().SetStateToUnchecked();
+                }
+            }
+        }
+
     }
 
     private string CalculateMasteryNumber(AnswerData deck)
@@ -196,7 +221,7 @@ public class DeckSelector : MonoBehaviour
         bool alreadyPicked = false;
         for (int i = 0; i < PickedDecks_answersData.Count; i++)
         {
-            if (PickedDecks_answersData[i].infoTextObject.text.Contains(newAnswer.infoTextObject.text))
+            if (PickedDecks_answersData[i].infoTextObject.text == newAnswer.infoTextObject.text)
             {
                 alreadyPicked = true;
             }
@@ -207,7 +232,7 @@ public class DeckSelector : MonoBehaviour
             int indexToRemove = -1;
             for (int i = 0; i < PickedDecks_answersData.Count; i++)
             {
-                if (PickedDecks_answersData[i].infoTextObject.text.Contains(newAnswer.infoTextObject.text))
+                if (PickedDecks_answersData[i].infoTextObject.text == newAnswer.infoTextObject.text)
                 {
                     indexToRemove = i;
                 }
@@ -222,11 +247,6 @@ public class DeckSelector : MonoBehaviour
 
     }
 
-
-    public void SelectAllButtonMethod()
-    {
-        Debug.Log("tiocà");
-    }
 
 }
 

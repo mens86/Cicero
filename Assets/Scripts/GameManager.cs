@@ -116,7 +116,7 @@ public class GameManager : MonoBehaviour
         bool alreadyPicked = false;
         for (int i = 0; i < PickedAnswers.Count; i++)
         {
-            if (PickedAnswers[i].infoTextObject.text.Contains(newAnswer.infoTextObject.text))
+            if (PickedAnswers[i].infoTextObject.text == newAnswer.infoTextObject.text)
             {
                 alreadyPicked = true;
             }
@@ -128,7 +128,7 @@ public class GameManager : MonoBehaviour
             int indexToRemove = -1;
             for (int i = 0; i < PickedAnswers.Count; i++)
             {
-                if (PickedAnswers[i].infoTextObject.text.Contains(newAnswer.infoTextObject.text))
+                if (PickedAnswers[i].infoTextObject.text == newAnswer.infoTextObject.text)
                 {
                     indexToRemove = i;
                 }

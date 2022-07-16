@@ -64,10 +64,40 @@ public class AnswerData : MonoBehaviour
         }
 
     }
+
+    public void SetStateToChecked()
+    {
+        Checked = true;
+        toggle.sprite = checkedToggle;
+
+        if (events.updateQuestionAnswer != null)
+        {
+            events.updateQuestionAnswer(this);
+        }
+    }
+
+    public void SetStateToUnchecked()
+    {
+        Checked = false;
+        toggle.sprite = uncheckedToggle;
+
+        if (events.updateQuestionAnswer != null)
+        {
+            events.updateQuestionAnswer(this);
+        }
+    }
+
     void UPdateUI()
     {
         toggle.sprite = (Checked) ? checkedToggle : uncheckedToggle;
     }
+
+
+
+
+
+
+
 
 
 }

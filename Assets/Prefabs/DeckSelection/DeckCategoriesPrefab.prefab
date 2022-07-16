@@ -521,7 +521,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5522938669826837286}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7839430093206018530, guid: 8541a266a553b864483c29609860c3ec, type: 3}
+        m_TargetAssemblyTypeName: DeckSelector, Assembly-CSharp
+        m_MethodName: SelectAllButton
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8241985515421968388}
+          m_ObjectArgumentAssemblyTypeName: DeckCategories, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7484697002224801706
 GameObject:
   m_ObjectHideFlags: 0
