@@ -7,6 +7,8 @@ using UnityEngine.UI;
 using System.Linq;
 using System;
 
+using System.Xml.Serialization;
+
 
 
 
@@ -30,6 +32,7 @@ public class DeckSelector : MonoBehaviour
 
     public List<AnswerData> PickedDecks_answersData = new List<AnswerData>();
     public List<string> listOfCategories = new List<string>();
+
     private char delimiter = ';';
 
 
@@ -48,7 +51,21 @@ public class DeckSelector : MonoBehaviour
     {
 
         ShowCategories();
+        LoadPreferences();
 
+    }
+
+
+
+    public void ShowCategories()
+    {
+        listOfCategories = PopulateCategories(availableDecks);
+        for (int i = 0; i < listOfCategories.Count; i++)
+        {
+            DeckCategories Category = (DeckCategories)Instantiate(CategoriesPrefab, DecksContentArea);
+            Category.CategoryName.text = listOfCategories[i];
+            ShowDecks(Category);
+        }
     }
 
     public List<string> PopulateCategories(List<TextAsset> decks_textAssets) //
@@ -66,7 +83,6 @@ public class DeckSelector : MonoBehaviour
     }
 
 
-
     public string CategoryParser(TextAsset txt)
     {
         string filecontent = txt.text;
@@ -76,20 +92,6 @@ public class DeckSelector : MonoBehaviour
         string[] cells = lines[0].Split(delimiter);
         return cells[1];
     }
-
-
-
-    public void ShowCategories()
-    {
-        listOfCategories = PopulateCategories(availableDecks);
-        for (int i = 0; i < listOfCategories.Count; i++)
-        {
-            DeckCategories Category = (DeckCategories)Instantiate(CategoriesPrefab, DecksContentArea);
-            Category.CategoryName.text = listOfCategories[i];
-            ShowDecks(Category);
-        }
-    }
-
 
     public void ShowDecks(DeckCategories Category)
     {
@@ -203,6 +205,7 @@ public class DeckSelector : MonoBehaviour
 
         if (selectedDecks.Count != 0)
         {
+            SavePreferences();
             MenuCanvas.SetActive(false);
             GameCanvas.SetActive(true);
             Managers.SetActive(true);
@@ -212,7 +215,75 @@ public class DeckSelector : MonoBehaviour
             CategoryName.text = "I've told you to choose a study mix!";
         }
 
+
+
     }
+
+    private void SavePreferences()
+    {
+        Dictionary<string, string> preferences = new Dictionary<string, string>();
+
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (listOfCategories.Contains(gameObj.name))
+            {
+                if (gameObj.GetComponent<AnswerData>().Checked)
+                {
+                    preferences.Add(gameObj.GetComponent<AnswerData>().infoTextObject.text, "Y");
+                }
+                else
+                {
+                    preferences.Add(gameObj.GetComponent<AnswerData>().infoTextObject.text, "N");
+                }
+            }
+        }
+
+        string stringedDict = string.Join(",", preferences.Select(m => m.Key + ":" + m.Value).ToArray());
+        PlayerPrefs.SetString("Deckpref", stringedDict);
+    }
+
+    private void LoadPreferences()
+    {
+        Dictionary<string, string> preferences = new Dictionary<string, string>();
+        string stringedDict = PlayerPrefs.GetString("Deckpref");
+        string[] dictElements = stringedDict.Split(',');
+        foreach (var e in dictElements)
+        {
+            string[] keyAndValue = e.Split(':');
+            preferences.Add(keyAndValue[0], keyAndValue[1]);
+        }
+
+        foreach (var e in preferences)
+        {
+            foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+            {
+                if (listOfCategories.Contains(gameObj.name))
+                {
+                    if (e.Key == gameObj.GetComponent<AnswerData>().infoTextObject.text)
+                    {
+                        if (e.Value == "Y")
+                        {
+                            gameObj.GetComponent<AnswerData>().SetStateToChecked();
+                        }
+                        else
+                        {
+                            gameObj.GetComponent<AnswerData>().SetStateToUnchecked();
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+    }
+
+
+
 
 
     public void UpdateAnswers(AnswerData newAnswer)
@@ -248,6 +319,11 @@ public class DeckSelector : MonoBehaviour
     }
 
 
+
 }
+
+
+
+
 
 
