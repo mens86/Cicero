@@ -256,7 +256,12 @@ public class UIManager : MonoBehaviour
 
 
 
-
+    public void ContinueGameButtonUIReset()
+    {
+        uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 1);
+        uIElements.MainCanvasGroup.blocksRaycasts = true;
+        UpdateScoreUI();
+    }
 
 
 }

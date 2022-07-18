@@ -7,7 +7,6 @@ using UnityEngine.UI;
 using System.Linq;
 using System;
 
-using System.Xml.Serialization;
 
 
 
@@ -36,9 +35,16 @@ public class DeckSelector : MonoBehaviour
     private char delimiter = ';';
 
 
+
+
     void OnEnable()
     {
         events.updateQuestionAnswer += UpdateAnswers;
+
+
+
+
+
     }
 
     void OnDisable()
@@ -52,6 +58,7 @@ public class DeckSelector : MonoBehaviour
 
         ShowCategories();
         LoadPreferences();
+
 
     }
 
@@ -101,7 +108,7 @@ public class DeckSelector : MonoBehaviour
             {
                 AnswerData deck = (AnswerData)Instantiate(deckSelectPrefab, DecksContentArea);
                 deck.infoTextObject.text = availableDecks[u].name;
-                deck.MasteryNumber.text = CalculateMasteryNumber(deck);
+                deck.MasteryNumber.text = CalculateDeckMasteryNumber(deck);
                 deck.name = Category.CategoryName.text;
             }
         }
@@ -168,7 +175,7 @@ public class DeckSelector : MonoBehaviour
 
     }
 
-    private string CalculateMasteryNumber(AnswerData deck)
+    private string CalculateDeckMasteryNumber(AnswerData deck)
     {
         List<Question> questionsOfDeck = memoryIndex.persistentQuestionList.Where(q => q.question_filename == deck.infoTextObject.text).ToList();
         int totalDeckKnowledge = 0;
@@ -184,6 +191,7 @@ public class DeckSelector : MonoBehaviour
 
         return percentageOfKnowledge.ToString() + "%";
     }
+
 
     public void StartGame()
     {
@@ -214,12 +222,9 @@ public class DeckSelector : MonoBehaviour
         {
             CategoryName.text = "I've told you to choose a study mix!";
         }
-
-
-
     }
 
-    private void SavePreferences()
+    public void SavePreferences()
     {
         Dictionary<string, string> preferences = new Dictionary<string, string>();
 
@@ -237,12 +242,12 @@ public class DeckSelector : MonoBehaviour
                 }
             }
         }
-
+        Debug.Log("saving selected decks");
         string stringedDict = string.Join(",", preferences.Select(m => m.Key + ":" + m.Value).ToArray());
         PlayerPrefs.SetString("Deckpref", stringedDict);
     }
 
-    private void LoadPreferences()
+    public void LoadPreferences()
     {
         Dictionary<string, string> preferences = new Dictionary<string, string>();
         string stringedDict = PlayerPrefs.GetString("Deckpref");
@@ -265,20 +270,11 @@ public class DeckSelector : MonoBehaviour
                         {
                             gameObj.GetComponent<AnswerData>().SetStateToChecked();
                         }
-                        else
-                        {
-                            gameObj.GetComponent<AnswerData>().SetStateToUnchecked();
-                        }
+
                     }
                 }
             }
         }
-
-
-
-
-
-
 
     }
 
@@ -321,8 +317,6 @@ public class DeckSelector : MonoBehaviour
 
 
 }
-
-
 
 
 

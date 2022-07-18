@@ -54,12 +54,6 @@ public class Autocomplete : MonoBehaviour
 
 
 
-
-
-
-
-
-
     private void ClearResults()
     {
         // Reverse loop since you destroy children
@@ -97,15 +91,15 @@ public class Autocomplete : MonoBehaviour
 
 
             //evidenzia il primo bottone
-            //sta roba dentro il forloop mi fa un po' cagare, magari la sistemerò
             if (child.GetComponentInChildren<TextMeshProUGUI>().text == results[0])
             {
                 firstButton = child;
 
                 ColorBlock colors = child.GetComponentInChildren<Button>().colors;
-                colors.highlightedColor = Color.cyan; //new Color32(90, 114, 192, 255);
+                colors.highlightedColor = new Color32(78, 255, 208, 255);
                 child.GetComponentInChildren<Image>().color = colors.highlightedColor;
             }
+
         }
 
     }

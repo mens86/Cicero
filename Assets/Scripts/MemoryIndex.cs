@@ -37,6 +37,7 @@ public class MemoryIndex : MonoBehaviour
     public int relearningStep = 600; //relearningStep in secondi (10 minuti)
     public float newInterval = 0.0f; //settato a 0 di default serve a far ricominciare una carta se finisce in relearning [il tizio preferisce 0.20, per non far ricominciare una carta da 0 se è per sbaglio finita in relearning. Ha senso, ma forse allora potremmo togliere un po' di interval, se in relearning si fa male]
     public int minimumInterval = 86400; //un giorno in secondi - se new interval*currentinterval fa meno di un giorno, setti a un giorno. Se metti la cosa della riga sopra forse non serve.
+    public float maximumInterval = 31536000.0f; // un anno in secondi - massimo intervallo di attesa (per evitare bug strani)
 
 
 
@@ -63,7 +64,7 @@ public class MemoryIndex : MonoBehaviour
 
 
 
-    private void Save(List<Question> persistentQuestionList)
+    public void Save(List<Question> persistentQuestionList)
     {
         IFormatter formatter = new BinaryFormatter();
         Stream stream = new FileStream(QUESTIONS_FILEPATH, FileMode.Create, FileAccess.Write, FileShare.None);
@@ -101,7 +102,7 @@ public class MemoryIndex : MonoBehaviour
                 case UserAnswerState.AllWrong:
                     currentInterval = learningStep0;
                     cardProprieties.cardState = "LearningCard";
-                    cardProprieties.cardKnowledge = 1;
+                    cardProprieties.cardKnowledge = 0;
                     cardProprieties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
@@ -130,7 +131,7 @@ public class MemoryIndex : MonoBehaviour
                 case UserAnswerState.AllWrong:
                     currentInterval = learningStep0;
                     cardProprieties.cardState = "LearningCard";
-                    cardProprieties.cardKnowledge = 1;
+                    cardProprieties.cardKnowledge = 0;
                     cardProprieties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
@@ -207,6 +208,11 @@ public class MemoryIndex : MonoBehaviour
             }
         }
 
+        if (currentInterval > maximumInterval)
+        {
+            currentInterval = maximumInterval;
+        }
+
         cardProprieties.cardCurrentInterval = currentInterval;
         cardProprieties.cardExpDate = SetExpiringDate();
         cardProprieties.cardKnowledge = cardProprieties.cardKnowledge * question.Answers.Length;
@@ -233,6 +239,10 @@ public class MemoryIndex : MonoBehaviour
             File.Delete(QUESTIONS_FILEPATH);
         }
     }
+
+
+
+
 
 }
 
