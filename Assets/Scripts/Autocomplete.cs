@@ -11,6 +11,7 @@ public class Autocomplete : MonoBehaviour
     public RectTransform resultsParent;
     public RectTransform prefab;
     public List<string> allAnswers;
+    public GameManager gameManager;
 
 
 
@@ -113,7 +114,17 @@ public class Autocomplete : MonoBehaviour
         //per fare ricerca solo con inizio parola
         //List<string> results = mockData.Where(str => str.Length >= input.Length).Where(str => str.Substring(0, input.Length).IndexOf(input) >= 0).ToList();     
 
-        return results;
+
+
+        List<string> answersToSubtract = new List<string>();
+        foreach (var answer in gameManager.PickedAnswers)
+        {
+            answersToSubtract.Add(answer.infoTextObject.text);
+        }
+
+
+
+        return results.Except(answersToSubtract).ToList();
 
 
 
