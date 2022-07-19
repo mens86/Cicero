@@ -977,6 +977,6 @@ MonoBehaviour:
   SelectAllUncheckedToggle: {fileID: 21300000, guid: 790293190e572b740b1c8af1e728077d, type: 3}
   SelectAllCheckedToggle: {fileID: 21300000, guid: 5ddc1d7b7bf12004780a620929ac8af1, type: 3}
   HideAndShowToggle: {fileID: 97786696118516513}
-  HideAndShowUncheckedToggle: {fileID: 21300000, guid: aeb77d0c2986cd448a51409c56ad0aff, type: 3}
-  HideAndShowCheckedToggle: {fileID: 21300000, guid: 6d3df38cd65ff494387432fd56427bde, type: 3}
+  HideAndShowUncheckedToggle: {fileID: 21300000, guid: 6d3df38cd65ff494387432fd56427bde, type: 3}
+  HideAndShowCheckedToggle: {fileID: 21300000, guid: aeb77d0c2986cd448a51409c56ad0aff, type: 3}
   SelectAllChecked: 0

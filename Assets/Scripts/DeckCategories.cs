@@ -22,7 +22,7 @@ public class DeckCategories : MonoBehaviour
 
     public bool SelectAllChecked = false;
 
-    void SelectAllUPdateUI()
+    public void SelectAllUPdateUI()
     {
         SelectAllToggle.sprite = (SelectAllChecked) ? SelectAllCheckedToggle : SelectAllUncheckedToggle;
     }

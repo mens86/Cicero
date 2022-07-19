@@ -71,6 +71,7 @@ public class DeckSelector : MonoBehaviour
         {
             DeckCategories Category = (DeckCategories)Instantiate(CategoriesPrefab, DecksContentArea);
             Category.CategoryName.text = listOfCategories[i];
+            Category.name = Category.CategoryName.text + "ThisIsACategory";
             ShowDecks(Category);
         }
     }
@@ -147,35 +148,68 @@ public class DeckSelector : MonoBehaviour
         }
     }
 
+
+
     public void SelectAllButton(DeckCategories Category)
     {
         Category.SelectAllSwitchState();
-        bool atLeastOneWasUnchecked = false;
+        //bool atLeastOneWasUnchecked = false;
         foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
         {
             if (gameObj.name == Category.CategoryName.text)
             {
-
                 if (!gameObj.GetComponent<AnswerData>().Checked)
                 {
-                    atLeastOneWasUnchecked = true;
+                    //atLeastOneWasUnchecked = true;
                     gameObj.GetComponent<AnswerData>().SetStateToChecked();
                 }
             }
         }
 
-        if (!atLeastOneWasUnchecked)
+        if (!atLeastOneWasUnchecked(Category))
         {
-            foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+            if (!Category.SelectAllChecked)
             {
-                if (gameObj.name == Category.CategoryName.text)
+                foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
                 {
-                    gameObj.GetComponent<AnswerData>().SetStateToUnchecked();
+                    if (gameObj.name == Category.CategoryName.text)
+                    {
+                        gameObj.GetComponent<AnswerData>().SetStateToUnchecked();
+                    }
                 }
             }
         }
-
     }
+
+    public bool atLeastOneWasUnchecked(DeckCategories Category)
+    {
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (gameObj.name == Category.CategoryName.text)
+            {
+                if (!gameObj.GetComponent<AnswerData>().Checked)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public bool atLeastOneWasChecked(DeckCategories Category)
+    {
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (gameObj.name == Category.CategoryName.text)
+            {
+                if (gameObj.GetComponent<AnswerData>().Checked)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     private string CalculateDeckMasteryNumber(AnswerData deck)
     {
@@ -232,6 +266,27 @@ public class DeckSelector : MonoBehaviour
 
         foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
         {
+            if (gameObj.name.Contains("ThisIsACategory"))
+            {
+                string toAdd = "";
+                if (gameObj.GetComponent<DeckCategories>().SelectAllChecked)
+                {
+                    toAdd += "Y";
+                }
+                else
+                {
+                    toAdd += "N";
+                }
+                if (gameObj.GetComponent<DeckCategories>().expanded)
+                {
+                    toAdd += "Y";
+                }
+                else
+                {
+                    toAdd += "N";
+                }
+                preferences.Add(gameObj.name, toAdd);
+            }
             if (listOfCategories.Contains(gameObj.name))
             {
                 if (gameObj.GetComponent<AnswerData>().Checked)
@@ -264,6 +319,27 @@ public class DeckSelector : MonoBehaviour
         {
             foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
             {
+                if (gameObj.name.Contains("ThisIsACategory"))
+                {
+                    if (e.Key == gameObj.name)
+                    {
+                        if (e.Value[0].ToString() == "Y")
+                        {
+                            gameObj.GetComponent<DeckCategories>().SelectAllChecked = true;
+                            gameObj.GetComponent<DeckCategories>().SelectAllUPdateUI();
+                        }
+                        if (e.Value[1].ToString() == "N")
+                        {
+                            HideAndShowDecksButton(gameObj.GetComponent<DeckCategories>());
+                        }
+                        else
+                        {
+                            gameObj.GetComponent<DeckCategories>().expanded = false;
+                            gameObj.GetComponent<DeckCategories>().HideAndShowUPdateUI();
+                            gameObj.GetComponent<DeckCategories>().expanded = true; //non so perché, non ho voglia di capire perché, ma funziona
+                        }
+                    }
+                }
                 if (listOfCategories.Contains(gameObj.name))
                 {
                     if (e.Key == gameObj.GetComponent<AnswerData>().infoTextObject.text)
@@ -277,7 +353,6 @@ public class DeckSelector : MonoBehaviour
                 }
             }
         }
-
     }
 
 
@@ -286,6 +361,7 @@ public class DeckSelector : MonoBehaviour
 
     public void UpdateAnswers(AnswerData newAnswer)
     {
+
 
         bool alreadyPicked = false;
         for (int i = 0; i < PickedDecks_answersData.Count; i++)
@@ -312,6 +388,25 @@ public class DeckSelector : MonoBehaviour
         else
         {
             PickedDecks_answersData.Add(newAnswer);
+        }
+
+
+        //set category to all picked if you have picked all decks
+        foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
+        {
+            if (gameObj.name.Contains("ThisIsACategory"))
+            {
+                if (!atLeastOneWasUnchecked(gameObj.GetComponent<DeckCategories>()))
+                {
+                    gameObj.GetComponent<DeckCategories>().SelectAllChecked = true;
+                    gameObj.GetComponent<DeckCategories>().SelectAllUPdateUI();
+                }
+                if (!atLeastOneWasChecked(gameObj.GetComponent<DeckCategories>()))
+                {
+                    gameObj.GetComponent<DeckCategories>().SelectAllChecked = false;
+                    gameObj.GetComponent<DeckCategories>().SelectAllUPdateUI();
+                }
+            }
         }
 
     }
