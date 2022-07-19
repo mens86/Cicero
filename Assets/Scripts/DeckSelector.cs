@@ -116,6 +116,7 @@ public class DeckSelector : MonoBehaviour
 
     public void HideAndShowDecksButton(DeckCategories Category)
     {
+        Category.HideAndShowUPdateUI();
         if (Category.expanded == true)
         {
             Category.expanded = false;
@@ -139,7 +140,7 @@ public class DeckSelector : MonoBehaviour
                 if (gameObj.name == Category.CategoryName.text)
                 {
                     gameObj.transform.localScale = new Vector3(1, 1, 1);
-                    gameObj.GetComponent<RectTransform>().sizeDelta = new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x, 130);
+                    gameObj.GetComponent<RectTransform>().sizeDelta = new Vector2(gameObj.GetComponent<RectTransform>().sizeDelta.x, deckSelectPrefab.Rect.sizeDelta.y);
                 }
 
             }
@@ -148,6 +149,7 @@ public class DeckSelector : MonoBehaviour
 
     public void SelectAllButton(DeckCategories Category)
     {
+        Category.SelectAllSwitchState();
         bool atLeastOneWasUnchecked = false;
         foreach (var gameObj in FindObjectsOfType(typeof(GameObject)) as GameObject[])
         {
