@@ -51,7 +51,12 @@ public class KeybManager : MonoBehaviour
     {
         List<string> res = GameObject.Find("InputField").GetComponent<Autocomplete>().GetResults(textBox.text);
 
-        if (res.Count() != 0)
+        if (res.Count() != 0) //sta merda funziona perché il primo prefab che viene creato in hierarchy (che è quello che trova il find, a parità di nome) è anche quello che mi serve. Non è molto ortodosso, ma non vedo perché dovrebbe fregarmene, visto che funziona.
+        {
+            GameObject.Find("ACprefab(Clone)").GetComponent<AnswerData>().SwitchState();
+        }
+        /*
+        //questo è come veniva submittata la parola prima, col doppio passaggio
         {
             if (textBox.text != res[0])
             {
@@ -68,5 +73,6 @@ public class KeybManager : MonoBehaviour
             }
 
         }
+        */
     }
 }
