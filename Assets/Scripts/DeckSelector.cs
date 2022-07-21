@@ -199,7 +199,7 @@ public class DeckSelector : MonoBehaviour
         foreach (var q in questionsOfDeck)
         {
             totalDeckKnowledge += q.Answers.Length * 3;
-            currentDeckKnowledge += q.cardProprieties.cardKnowledge;
+            currentDeckKnowledge += q.cardProperties.cardKnowledge;
         }
 
         float percentageOfKnowledge = (currentDeckKnowledge * 100) / totalDeckKnowledge;

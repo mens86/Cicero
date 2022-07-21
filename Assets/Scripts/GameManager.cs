@@ -86,8 +86,14 @@ public class GameManager : MonoBehaviour
             questionsToSort.AddRange(questions_matching_filename);
         }
 
+
+
+
+        Debug.Log(questionsToSort[0].Answers);
+        Debug.Log(questionsToSort[0].cardProperties);
+        Debug.Log(questionsToSort[0].cardProperties.cardExpDate);
         //sorting questions by date
-        var questions_matching_filename_sorted = (from q in questionsToSort orderby q.cardProprieties.cardExpDate select q).ToList();
+        var questions_matching_filename_sorted = (from q in questionsToSort orderby q.cardProperties.cardExpDate select q).ToList();
         questions.AddRange(questions_matching_filename_sorted);
 
 

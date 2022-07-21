@@ -91,119 +91,119 @@ public class MemoryIndex : MonoBehaviour
 
     public void UpdateMemoryIndex(Question question, UserAnswerState WhatUserAnswered)
     {
-        CardProprieties cardProprieties = question.cardProprieties;
+        CardProperties cardProperties = question.cardProperties;
 
-        Debug.Log("BEFORE -->" + question.Info + "||State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", currentInterval: " + cardProprieties.cardCurrentInterval + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
+        Debug.Log("BEFORE -->" + question.Info + "||State:" + cardProperties.cardState + ", Knowledge: " + cardProperties.cardKnowledge + ", currentInterval: " + cardProperties.cardCurrentInterval + ", ease: " + cardProperties.cardEase + ", expdate: " + cardProperties.cardExpDate + ", leech level: " + cardProperties.cardCurrentLeechLevel + ", is Leech?: " + cardProperties.isLeech);
 
-        if (cardProprieties.cardState == "NewCard")
+        if (cardProperties.cardState == "NewCard")
         {
             switch (WhatUserAnswered)
             {
                 case UserAnswerState.AllWrong:
                     currentInterval = learningStep0;
-                    cardProprieties.cardState = "LearningCard";
-                    cardProprieties.cardKnowledge = 0;
-                    cardProprieties.LeechCount(1);
+                    cardProperties.cardState = "LearningCard";
+                    cardProperties.cardKnowledge = 0;
+                    cardProperties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
                     currentInterval = learningStep1;
-                    cardProprieties.cardState = "LearningCard";
-                    cardProprieties.cardKnowledge = 1;
+                    cardProperties.cardState = "LearningCard";
+                    cardProperties.cardKnowledge = 1;
                     break;
                 case UserAnswerState.AlmostAllRight:
                     currentInterval = LearningStep2;
-                    cardProprieties.cardState = "LearningCard";
-                    cardProprieties.cardKnowledge = 1;
+                    cardProperties.cardState = "LearningCard";
+                    cardProperties.cardKnowledge = 1;
                     break;
                 case UserAnswerState.AllRight:
                     currentInterval = easyInterval;
-                    cardProprieties.cardState = "GraduatedCard";
-                    cardProprieties.cardKnowledge = 3;
-                    cardProprieties.LeechCount(-1);
+                    cardProperties.cardState = "GraduatedCard";
+                    cardProperties.cardKnowledge = 3;
+                    cardProperties.LeechCount(-1);
                     break;
             }
 
         }
-        else if (cardProprieties.cardState == "LearningCard")
+        else if (cardProperties.cardState == "LearningCard")
         {
             switch (WhatUserAnswered)
             {
                 case UserAnswerState.AllWrong:
                     currentInterval = learningStep0;
-                    cardProprieties.cardState = "LearningCard";
-                    cardProprieties.cardKnowledge = 0;
-                    cardProprieties.LeechCount(1);
+                    cardProperties.cardState = "LearningCard";
+                    cardProperties.cardKnowledge = 0;
+                    cardProperties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
                     currentInterval = learningStep1;
-                    cardProprieties.cardState = "LearningCard";
-                    cardProprieties.cardKnowledge = 1;
+                    cardProperties.cardState = "LearningCard";
+                    cardProperties.cardKnowledge = 1;
                     break;
                 case UserAnswerState.AlmostAllRight:
                     currentInterval = graduatingInterval;
-                    cardProprieties.cardState = "GraduatedCard";
-                    cardProprieties.cardKnowledge = 1;
+                    cardProperties.cardState = "GraduatedCard";
+                    cardProperties.cardKnowledge = 1;
                     break;
                 case UserAnswerState.AllRight:
                     currentInterval = easyInterval;
-                    cardProprieties.cardState = "GraduatedCard";
-                    cardProprieties.cardKnowledge = 3;
-                    cardProprieties.LeechCount(-1);
+                    cardProperties.cardState = "GraduatedCard";
+                    cardProperties.cardKnowledge = 3;
+                    cardProperties.LeechCount(-1);
                     break;
             }
         }
-        else if (cardProprieties.cardState == "GraduatedCard")
+        else if (cardProperties.cardState == "GraduatedCard")
         {
             switch (WhatUserAnswered)
             {
                 case UserAnswerState.AllWrong:
                     currentInterval = relearningStep;
-                    cardProprieties.cardState = "RelearningCard";
-                    cardProprieties.cardKnowledge = 1;
-                    cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase -= 0.20f : minimumEase; //ease -20%
-                    cardProprieties.LeechCount(1);
+                    cardProperties.cardState = "RelearningCard";
+                    cardProperties.cardKnowledge = 1;
+                    cardProperties.cardEase = cardProperties.cardEase > minimumEase ? cardProperties.cardEase -= 0.20f : minimumEase; //ease -20%
+                    cardProperties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
                     currentInterval = 1.2f * currentInterval * intervalModifier;
-                    cardProprieties.cardState = "RelearningCard";
-                    cardProprieties.cardKnowledge = 1;
-                    cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase -= 0.15f : minimumEase; //ease -15%
+                    cardProperties.cardState = "RelearningCard";
+                    cardProperties.cardKnowledge = 1;
+                    cardProperties.cardEase = cardProperties.cardEase > minimumEase ? cardProperties.cardEase -= 0.15f : minimumEase; //ease -15%
                     break;
                 case UserAnswerState.AlmostAllRight: //ease invariata, ma è da valutare se mettere un -5%
-                    currentInterval = cardProprieties.cardEase * cardProprieties.cardCurrentInterval * intervalModifier;
-                    cardProprieties.cardKnowledge = 2;
+                    currentInterval = cardProperties.cardEase * cardProperties.cardCurrentInterval * intervalModifier;
+                    cardProperties.cardKnowledge = 2;
                     break;
                 case UserAnswerState.AllRight:
-                    currentInterval = cardProprieties.cardEase * cardProprieties.cardCurrentInterval * easyBonus;
-                    cardProprieties.cardEase = cardProprieties.cardEase > minimumEase ? cardProprieties.cardEase += 0.15f : minimumEase; //ease +15%
-                    cardProprieties.cardKnowledge = 3;
-                    cardProprieties.LeechCount(-1);
+                    currentInterval = cardProperties.cardEase * cardProperties.cardCurrentInterval * easyBonus;
+                    cardProperties.cardEase = cardProperties.cardEase > minimumEase ? cardProperties.cardEase += 0.15f : minimumEase; //ease +15%
+                    cardProperties.cardKnowledge = 3;
+                    cardProperties.LeechCount(-1);
                     break;
             }
         }
-        else if (cardProprieties.cardState == "RelearningCard")
+        else if (cardProperties.cardState == "RelearningCard")
         {
             switch (WhatUserAnswered)
             {
                 case UserAnswerState.AllWrong:
                     currentInterval = relearningStep;
-                    cardProprieties.cardKnowledge = 0;
-                    cardProprieties.LeechCount(1);
+                    cardProperties.cardKnowledge = 0;
+                    cardProperties.LeechCount(1);
                     break;
                 case UserAnswerState.AlmostAllWrong:
                     currentInterval = 1.5f * relearningStep;
-                    cardProprieties.cardKnowledge = 1;
+                    cardProperties.cardKnowledge = 1;
                     break;
                 case UserAnswerState.AlmostAllRight:
-                    currentInterval = newInterval * cardProprieties.cardCurrentInterval;
-                    cardProprieties.cardState = "GraduatedCard";
-                    cardProprieties.cardKnowledge = 1;
+                    currentInterval = newInterval * cardProperties.cardCurrentInterval;
+                    cardProperties.cardState = "GraduatedCard";
+                    cardProperties.cardKnowledge = 1;
                     break;
                 case UserAnswerState.AllRight:
                     currentInterval = easyInterval;
-                    cardProprieties.cardState = "GraduatedCard";
-                    cardProprieties.cardKnowledge = 1;
-                    cardProprieties.LeechCount(-1);
+                    cardProperties.cardState = "GraduatedCard";
+                    cardProperties.cardKnowledge = 1;
+                    cardProperties.LeechCount(-1);
                     break;
             }
         }
@@ -213,11 +213,11 @@ public class MemoryIndex : MonoBehaviour
             currentInterval = maximumInterval;
         }
 
-        cardProprieties.cardCurrentInterval = currentInterval;
-        cardProprieties.cardExpDate = SetExpiringDate();
-        cardProprieties.cardKnowledge = cardProprieties.cardKnowledge * question.Answers.Length;
+        cardProperties.cardCurrentInterval = currentInterval;
+        cardProperties.cardExpDate = SetExpiringDate();
+        cardProperties.cardKnowledge = cardProperties.cardKnowledge * question.Answers.Length;
 
-        Debug.Log("AFTER -->" + question.Info + "||State:" + cardProprieties.cardState + ", Knowledge: " + cardProprieties.cardKnowledge + ", currentInterval: " + cardProprieties.cardCurrentInterval + ", ease: " + cardProprieties.cardEase + ", expdate: " + cardProprieties.cardExpDate + ", leech level: " + cardProprieties.cardCurrentLeechLevel + ", is Leech?: " + cardProprieties.isLeech);
+        Debug.Log("AFTER -->" + question.Info + "||State:" + cardProperties.cardState + ", Knowledge: " + cardProperties.cardKnowledge + ", currentInterval: " + cardProperties.cardCurrentInterval + ", ease: " + cardProperties.cardEase + ", expdate: " + cardProperties.cardExpDate + ", leech level: " + cardProperties.cardCurrentLeechLevel + ", is Leech?: " + cardProperties.isLeech);
 
 
     }

@@ -1767,7 +1767,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 17.478, y: 0}
+  m_AnchoredPosition: {x: 17.478027, y: 0}
   m_SizeDelta: {x: -34.956, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &769724565
@@ -4878,6 +4878,7 @@ MonoBehaviour:
   resultsParent: {fileID: 404339250}
   prefab: {fileID: 1673317224429184889, guid: bf3bac54f0086174198d8ebea64af155, type: 3}
   allAnswers: []
+  gameManager: {fileID: 154132955}
   firstButton: {fileID: 0}
   currentTextInInputField: 
 --- !u!1 &1542970829

@@ -46,7 +46,7 @@ public class Question
     public int Timer = 0;
     public AnswerType Type = AnswerType.Single;
     public int AddScore = 0;
-    public CardProprieties cardProprieties;
+    public CardProperties cardProperties = new CardProperties();
     public string question_filename;
 
     public Question() { }
@@ -126,9 +126,9 @@ public class Question
 }
 
 [Serializable]
-public class CardProprieties
+public class CardProperties
 {
-    public CardProprieties() { }
+    public CardProperties() { }
 
     public string cardState = "NewCard";
     public int cardKnowledge = 0; // questo numero serve a mostrare all'utente la % di conoscenza del mazzo
@@ -153,5 +153,8 @@ public class CardProprieties
             memoryIndex.currentInterval = 345600;
         }
     }
+
+
+
 }
 

@@ -121,9 +121,6 @@ public class Autocomplete : MonoBehaviour
         {
             answersToSubtract.Add(answer.infoTextObject.text);
         }
-
-
-
         return results.Except(answersToSubtract).ToList();
 
 
