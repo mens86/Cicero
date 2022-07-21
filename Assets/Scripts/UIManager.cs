@@ -51,6 +51,12 @@ public struct UIElements
     [SerializeField] TextMeshProUGUI resolutionStateInfoText;
     public TextMeshProUGUI ResolutionStateInfoText { get { return resolutionStateInfoText; } }
 
+    [SerializeField] TextMeshProUGUI rightAnswerWasText;
+    public TextMeshProUGUI RightAnswerWasText { get { return rightAnswerWasText; } }
+
+    [SerializeField] TextMeshProUGUI rightAnswerText;
+    public TextMeshProUGUI RightAnswerText { get { return rightAnswerText; } }
+
     [SerializeField] TextMeshProUGUI resolutionScoreText;
     public TextMeshProUGUI ResolutionScoreText { get { return resolutionScoreText; } }
 
@@ -154,43 +160,56 @@ public class UIManager : MonoBehaviour
         int maxScoreForCurrentAnswer = answersToCurrentQuestion.Length * scoreForEachAnswer;
         foreach (var a in answersToCurrentQuestion)
         {
-            CorrectAnswers += "\n" + a.groupOfSynonyms[0]; // Questo si può fare meglio e mostrare tutti i sinonimi con un forlooppino. Si tratta di decidere.
+            CorrectAnswers += "- " + a.groupOfSynonyms[0] + "\n"; // Questo si può fare meglio e mostrare tutti i sinonimi con un forlooppino. Si tratta di decidere.
         }
 
         switch (type)
         {
             case ResolutionScreenType.Correct:
                 uIElements.ResolutionBG.color = parameters.CorrectBGColor;
-                uIElements.ResolutionStateInfoText.text = "CORRECT!";
-                uIElements.ResolutionScoreText.text = "" + score + "/" + maxScoreForCurrentAnswer;
+                uIElements.ResolutionStateInfoText.text = "Exactum!";
+                uIElements.RightAnswerWasText.text = "";
+                uIElements.RightAnswerText.text = "";
+                uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.Incorrect:
                 uIElements.ResolutionBG.color = parameters.IncorrectBGColor;
-                uIElements.ResolutionStateInfoText.text = "WRONG! \nThe correct answer was: \n\n" + CorrectAnswers;
-                uIElements.ResolutionScoreText.text = "" + score + "/" + maxScoreForCurrentAnswer;
+                uIElements.ResolutionStateInfoText.text = "Erratum!";
+                uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
+                uIElements.RightAnswerText.text = CorrectAnswers;
+                uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.LessThanCorrect:
                 uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
-                uIElements.ResolutionStateInfoText.text = "ALMOST! \nThe correct answer was: \n\n" + CorrectAnswers;
-                uIElements.ResolutionScoreText.text = "" + score + "/" + maxScoreForCurrentAnswer;
+                uIElements.ResolutionStateInfoText.text = "Paene!";
+                uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
+                uIElements.RightAnswerText.text = CorrectAnswers;
+                uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.MoreThanCorrect:
                 uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
-                uIElements.ResolutionStateInfoText.text = "TOO MUCH! \nThe correct answer was: \n\n" + CorrectAnswers;
-                uIElements.ResolutionScoreText.text = "" + score + "/" + maxScoreForCurrentAnswer;
+                uIElements.ResolutionStateInfoText.text = "Nimis!";
+                uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
+                uIElements.RightAnswerText.text = CorrectAnswers;
+                uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.Finish:
                 uIElements.ResolutionBG.color = parameters.FinalBGColor;
-                uIElements.ResolutionStateInfoText.text = "\n\n\n\n\n\n\nGAME OVER! \n\n\n\nFINAL SCORE";
+                uIElements.ResolutionStateInfoText.text = "Ludus conclusus!";
+                uIElements.ResolutionStateInfoText.rectTransform.anchoredPosition = new Vector3(0, -600, 0);
+                uIElements.RightAnswerWasText.text = "";
+                uIElements.RightAnswerText.text = "";
+                uIElements.ResolutionScoreText.rectTransform.anchoredPosition = new Vector3(0, -1200, 0);
+
 
                 StartCoroutine(CalculateScore());
                 uIElements.FinishUIElements.gameObject.SetActive(true);
                 uIElements.HighScoreText.gameObject.SetActive(true);
-                uIElements.HighScoreText.text = ((highscore > events.StartupHighScore ? "<color=yellow>new </color>" : string.Empty) + "Highscore " + highscore);
+                uIElements.HighScoreText.text = ((highscore > events.StartupHighScore ? "<color=yellow>new </color>" : string.Empty) + "Puncta altiora: " + highscore);
                 break;
         }
     }
@@ -204,7 +223,7 @@ public class UIManager : MonoBehaviour
         while ((scoreMoreThanZero) ? scoreValue < events.CurrentFinalScore : scoreValue > events.CurrentFinalScore)
         {
             scoreValue += scoreMoreThanZero ? 1 : -1;
-            uIElements.ResolutionScoreText.text = scoreValue.ToString();
+            uIElements.ResolutionScoreText.text = "puncta: " + scoreValue.ToString();
 
             yield return null;
         }
@@ -214,7 +233,7 @@ public class UIManager : MonoBehaviour
 
     void UpdateScoreUI()
     {
-        uIElements.ScoreText.text = "Score: " + events.CurrentFinalScore;
+        uIElements.ScoreText.text = "Puncta: " + events.CurrentFinalScore;
     }
 
 
