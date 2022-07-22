@@ -40,6 +40,12 @@ public struct UIElements
     [SerializeField] TextMeshProUGUI scoreText;
     public TextMeshProUGUI ScoreText { get { return scoreText; } }
 
+    [SerializeField] TextMeshProUGUI gameFinishedText;
+    public TextMeshProUGUI GameFinishedText { get { return gameFinishedText; } }
+
+    [SerializeField] TextMeshProUGUI finalscoreText;
+    public TextMeshProUGUI FinalscoreText { get { return finalscoreText; } }
+
     [Space]
 
     [SerializeField] Animator resolutionScreenAnimator;
@@ -65,8 +71,8 @@ public struct UIElements
     [SerializeField] TextMeshProUGUI highScoreText;
     public TextMeshProUGUI HighScoreText { get { return highScoreText; } }
 
-    [SerializeField] CanvasGroup mainCanvasGroup;
-    public CanvasGroup MainCanvasGroup { get { return mainCanvasGroup; } }
+    [SerializeField] CanvasGroup gameCanvasGroup;
+    public CanvasGroup GameCanvasGroup { get { return gameCanvasGroup; } }
 
     [SerializeField] RectTransform finishUIElements;
     public RectTransform FinishUIElements { get { return finishUIElements; } }
@@ -81,19 +87,21 @@ public class UIManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] GameEvents events;
+    [SerializeField] GameManager gameManager;
+    [SerializeField] public GameObject gotItButton;
 
     [Header("UI Elements (Prefabs)")]
 
     [SerializeField] AnswerData answerPrefab;
     [SerializeField] AnswerData pickedAnswerPrefab;
 
-    [SerializeField] UIElements uIElements;
+    [SerializeField] public UIElements uIElements;
 
 
     [Space]
     [SerializeField] UIManagerParameters parameters;
 
-    private int resStateParaHash = 0;
+    public int resStateParaHash = 0;
 
     public float ResolutionDelayTime = 1;
 
@@ -128,10 +136,11 @@ public class UIManager : MonoBehaviour
     {
         UpdateResUI(type, score);
         uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 2);
-        uIElements.MainCanvasGroup.blocksRaycasts = false;
+        uIElements.GameCanvasGroup.blocksRaycasts = false;
 
-        if (type != ResolutionScreenType.Finish)
+        if (type == ResolutionScreenType.Correct)
         {
+            gotItButton.SetActive(false);
             if (IE_DisplayTimedResolution != null)
             {
                 StopCoroutine(IE_DisplayTimedResolution);
@@ -139,6 +148,11 @@ public class UIManager : MonoBehaviour
             IE_DisplayTimedResolution = DisplayTimedResolution();
             StartCoroutine(IE_DisplayTimedResolution);
         }
+        else
+        {
+            gotItButton.SetActive(true);
+        }
+
     }
 
     IEnumerator DisplayTimedResolution()
@@ -146,7 +160,11 @@ public class UIManager : MonoBehaviour
 
         yield return new WaitForSeconds(ResolutionDelayTime);
         uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 1);
-        uIElements.MainCanvasGroup.blocksRaycasts = true;
+        uIElements.GameCanvasGroup.blocksRaycasts = true;
+        if (!gameManager.IsFinished)
+        {
+            gameManager.Display();
+        }
     }
 
     void UpdateResUI(ResolutionScreenType type, float score)
@@ -154,13 +172,13 @@ public class UIManager : MonoBehaviour
         var highscore = PlayerPrefs.GetFloat(GameUtility.SavePrefKey);
 
 
-        var answersToCurrentQuestion = GameObject.Find("Managers").GetComponent<GameManager>().questions[GameObject.Find("Managers").GetComponent<GameManager>().currentQuestion].Answers;
-        int scoreForEachAnswer = GameObject.Find("Managers").GetComponent<GameManager>().questions[GameObject.Find("Managers").GetComponent<GameManager>().currentQuestion].AddScore;
+        var answersToCurrentQuestion = gameManager.questions[gameManager.currentQuestion].Answers;
+        int scoreForEachAnswer = gameManager.questions[gameManager.currentQuestion].AddScore;
         string CorrectAnswers = "";
         int maxScoreForCurrentAnswer = answersToCurrentQuestion.Length * scoreForEachAnswer;
         foreach (var a in answersToCurrentQuestion)
         {
-            CorrectAnswers += "- " + a.groupOfSynonyms[0] + "\n"; // Questo si può fare meglio e mostrare tutti i sinonimi con un forlooppino. Si tratta di decidere.
+            CorrectAnswers += a.groupOfSynonyms[0] + "\n"; // Questo si può fare meglio e mostrare tutti i sinonimi con un forlooppino. Si tratta di decidere.
         }
 
         switch (type)
@@ -179,6 +197,7 @@ public class UIManager : MonoBehaviour
                 uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
                 uIElements.RightAnswerText.text = CorrectAnswers;
                 uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
+
                 break;
 
             case ResolutionScreenType.LessThanCorrect:
@@ -199,11 +218,12 @@ public class UIManager : MonoBehaviour
 
             case ResolutionScreenType.Finish:
                 uIElements.ResolutionBG.color = parameters.FinalBGColor;
-                uIElements.ResolutionStateInfoText.text = "Ludus conclusus!";
-                uIElements.ResolutionStateInfoText.rectTransform.anchoredPosition = new Vector3(0, -600, 0);
+                uIElements.GameFinishedText.text = "Ludus conclusus!";
+                uIElements.ResolutionStateInfoText.text = "";
                 uIElements.RightAnswerWasText.text = "";
                 uIElements.RightAnswerText.text = "";
-                uIElements.ResolutionScoreText.rectTransform.anchoredPosition = new Vector3(0, -1200, 0);
+                uIElements.ResolutionScoreText.text = "";
+
 
 
                 StartCoroutine(CalculateScore());
@@ -216,14 +236,15 @@ public class UIManager : MonoBehaviour
 
     IEnumerator CalculateScore()
     {
-        if (events.CurrentFinalScore == 0) { uIElements.ResolutionScoreText.text = 0.ToString(); yield break; }
+        if (events.CurrentFinalScore == 0) { uIElements.FinalscoreText.text = "puncta: " + 0.ToString(); yield break; }
 
         var scoreValue = 0;
+
         var scoreMoreThanZero = events.CurrentFinalScore > 0;
         while ((scoreMoreThanZero) ? scoreValue < events.CurrentFinalScore : scoreValue > events.CurrentFinalScore)
         {
             scoreValue += scoreMoreThanZero ? 1 : -1;
-            uIElements.ResolutionScoreText.text = "puncta: " + scoreValue.ToString();
+            uIElements.FinalscoreText.text = "puncta: " + scoreValue.ToString();
 
             yield return null;
         }
@@ -233,7 +254,7 @@ public class UIManager : MonoBehaviour
 
     void UpdateScoreUI()
     {
-        uIElements.ScoreText.text = "Puncta: " + events.CurrentFinalScore;
+        uIElements.ScoreText.text = "puncta: " + events.CurrentFinalScore;
     }
 
 
@@ -271,16 +292,26 @@ public class UIManager : MonoBehaviour
     }
 
 
-
-
-
-
-    public void ContinueGameButtonUIReset()
+    public void AnotherSessionButtonUIReset()
     {
         uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 1);
-        uIElements.MainCanvasGroup.blocksRaycasts = true;
+        uIElements.GameCanvasGroup.blocksRaycasts = true;
         UpdateScoreUI();
     }
 
+    public void ContinueGame()
+    {
+        uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 1);
+        uIElements.GameCanvasGroup.blocksRaycasts = true;
+        if (!gameManager.IsFinished)
+        {
+            gameManager.Display();
+        }
+        else
+        {
+            gameManager.SetHighScore();
+            events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Finish, 0);
+        }
 
+    }
 }

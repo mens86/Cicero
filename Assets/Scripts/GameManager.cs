@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     }
 
     [SerializeField] GameEvents events = null;
+    [SerializeField] UIManager UIManager = null;
 
 
     [SerializeField] Animator timerAnimator = null;
@@ -42,12 +43,13 @@ public class GameManager : MonoBehaviour
     private List<int> FinishedQuestions = new List<int>();
     public int currentQuestion = 0;
     private int timerStateParaHash = 0;
+    public bool isPaused = false;
 
 
 
     private IEnumerator IE_StartTimer = null;
 
-    private bool IsFinished
+    public bool IsFinished
     {
         get
         {
@@ -141,13 +143,13 @@ public class GameManager : MonoBehaviour
             }
             PickedAnswers.RemoveAt(indexToRemove);
 
-            GameObject.Find("Managers").GetComponent<UIManager>().ShowPickedAnswers(PickedAnswers);
+            UIManager.ShowPickedAnswers(PickedAnswers);
         }
         else
         {
             PickedAnswers.Add(newAnswer);
             GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
-            GameObject.Find("Managers").GetComponent<UIManager>().ShowPickedAnswers(PickedAnswers);
+            UIManager.ShowPickedAnswers(PickedAnswers);
         }
 
     }
@@ -159,9 +161,9 @@ public class GameManager : MonoBehaviour
     }
 
 
-    void Display()
+    public void Display()
     {
-        GameObject.Find("Managers").GetComponent<UIManager>().ErasePickedAnswers(PickedAnswers);
+        UIManager.ErasePickedAnswers(PickedAnswers);
         EraseAnswers();
         GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
         var question = questions[currentQuestion];
@@ -193,51 +195,49 @@ public class GameManager : MonoBehaviour
         switch (scenario)
         {
             case UserAnswersScenario.AllCorrect:
-                GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 1;
+                UIManager.ResolutionDelayTime = 1;
                 UpdateScore(score);
                 events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Correct, score);
                 AudioManager.Instance.PlaySound("CorrectSFX");
                 break;
             case UserAnswersScenario.AllWrong:
-                GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 3;
+                UIManager.ResolutionDelayTime = 3;
                 UpdateScore(score);
                 events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Incorrect, score);
                 AudioManager.Instance.PlaySound("IncorrectSFX");
                 break;
             case UserAnswersScenario.LessThanCorrect:
-                GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 3;
+                UIManager.ResolutionDelayTime = 3;
                 UpdateScore(score);
                 events.DisplayResolutionScreen(UIManager.ResolutionScreenType.LessThanCorrect, score);
                 AudioManager.Instance.PlaySound("IncorrectSFX");
                 break;
             case UserAnswersScenario.MoreThanCorrect:
-                GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime = 3;
+                UIManager.ResolutionDelayTime = 3;
                 UpdateScore(score);
                 events.DisplayResolutionScreen(UIManager.ResolutionScreenType.MoreThanCorrect, score);
                 AudioManager.Instance.PlaySound("IncorrectSFX");
                 break;
         }
 
-        float currentResolutionDelayTime = GameObject.Find("Managers").GetComponent<UIManager>().ResolutionDelayTime;
+        float currentResolutionDelayTime = UIManager.ResolutionDelayTime;
         if (!IsFinished)
         {
             currentQuestion += 1;
-            StartCoroutine(ExecuteAfterTime(currentResolutionDelayTime));
-            IEnumerator ExecuteAfterTime(float time)
-            {
-                yield return new WaitForSeconds(time);
-                Display();
-            }
         }
         else
         {
-            StartCoroutine(ExecuteAfterTime(currentResolutionDelayTime));
-            IEnumerator ExecuteAfterTime(float time)
+            if (scenario == UserAnswersScenario.AllCorrect)
             {
-                yield return new WaitForSeconds(time);
-                SetHighScore();
-                events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Finish, 0);
+                StartCoroutine(ExecuteAfterTime(currentResolutionDelayTime));
+                IEnumerator ExecuteAfterTime(float time)
+                {
+                    yield return new WaitForSeconds(time);
+                    SetHighScore();
+                    events.DisplayResolutionScreen(UIManager.ResolutionScreenType.Finish, 0);
+                }
             }
+
         }
     }
 
@@ -308,7 +308,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// Function that is called to set new highscore if game score is higher
-    private void SetHighScore()
+    public void SetHighScore()
     {
         var highscore = PlayerPrefs.GetFloat(GameUtility.SavePrefKey);
         if (highscore < events.CurrentFinalScore)
@@ -327,10 +327,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-
-    public void ContinueGameButton()
+    public void PauseGame()
     {
+        Time.timeScale = 0f;
+        isPaused = true;
+    }
+    public void ResumeGame()
+    {
+        Time.timeScale = 1f;
+        isPaused = false;
+    }
+
+    public void AnotherSessionButton()
+    {
+
+        UIManager.gotItButton.SetActive(false);
+        UIManager.uIElements.ResolutionScreenAnimator.SetInteger(UIManager.resStateParaHash, 2);
         memoryIndex.Save(memoryIndex.persistentQuestionList);
         events.CurrentFinalScore = 0;
         events.StartupHighScore = PlayerPrefs.GetFloat(GameUtility.SavePrefKey);
