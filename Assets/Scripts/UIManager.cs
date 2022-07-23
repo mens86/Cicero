@@ -176,7 +176,7 @@ public class UIManager : MonoBehaviour
         var answersToCurrentQuestion = gameManager.questions[gameManager.currentQuestion].Answers;
         int scoreForEachAnswer = gameManager.questions[gameManager.currentQuestion].AddScore;
         string coloredCorrectAnswers = "";
-        string coloredChosenAnswers = "";
+        string coloredChosenAnswers = "\n\n delegisti: \n\n";
         int maxScoreForCurrentAnswer = answersToCurrentQuestion.Length * scoreForEachAnswer;
 
         List<string> pickedAnsw = gameManager.PickedAnswers.Select(ad => ad.infoTextObject.text).ToList();
@@ -228,6 +228,10 @@ public class UIManager : MonoBehaviour
                 coloredChosenAnswers += "<color=red>" + pa + "</color > \n";
             }
         }
+        if (pickedAnsw.Count == 0)
+        {
+            coloredChosenAnswers = "\n\n\n non delegisti responsum!";
+        }
 
 
 
@@ -246,8 +250,8 @@ public class UIManager : MonoBehaviour
             case ResolutionScreenType.Incorrect:
                 uIElements.ResolutionBG.color = parameters.IncorrectBGColor;
                 uIElements.ResolutionStateInfoText.text = "<color=red> Erratum! </color>";
-                uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
-                uIElements.RightAnswerText.text = coloredCorrectAnswers + "\n delegisti: \n" + coloredChosenAnswers;
+                uIElements.RightAnswerWasText.text = "-" + gameManager.questions[gameManager.currentQuestion].Info + "-\n\n" + "Emendatum responsum est: ";
+                uIElements.RightAnswerText.text = coloredCorrectAnswers + coloredChosenAnswers;
                 uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
 
                 break;
@@ -255,16 +259,16 @@ public class UIManager : MonoBehaviour
             case ResolutionScreenType.LessThanCorrect:
                 uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
                 uIElements.ResolutionStateInfoText.text = "<color=orange> Paene! </color>";
-                uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
-                uIElements.RightAnswerText.text = coloredCorrectAnswers + "\n delegisti: \n" + coloredChosenAnswers;
+                uIElements.RightAnswerWasText.text = "-" + gameManager.questions[gameManager.currentQuestion].Info + "-\n\n" + "Emendatum responsum est: ";
+                uIElements.RightAnswerText.text = coloredCorrectAnswers + coloredChosenAnswers;
                 uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.MoreThanCorrect:
                 uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
                 uIElements.ResolutionStateInfoText.text = "<color=orange> Nimis! </color>";
-                uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
-                uIElements.RightAnswerText.text = coloredCorrectAnswers + "\n delegisti: \n" + coloredChosenAnswers;
+                uIElements.RightAnswerWasText.text = "-" + gameManager.questions[gameManager.currentQuestion].Info + "-\n\n" + "Emendatum responsum est: ";
+                uIElements.RightAnswerText.text = coloredCorrectAnswers + coloredChosenAnswers;
                 uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
