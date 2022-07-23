@@ -214,6 +214,10 @@ public class MemoryIndex : MonoBehaviour
         }
 
         cardProperties.cardCurrentInterval = currentInterval;
+        if (cardProperties.isLeech)
+        {
+            cardProperties.cardCurrentInterval = 345600;
+        }
         cardProperties.cardExpDate = SetExpiringDate();
         cardProperties.cardKnowledge = cardProperties.cardKnowledge * question.Answers.Length;
 

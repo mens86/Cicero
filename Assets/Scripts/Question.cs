@@ -147,13 +147,6 @@ public class CardProperties
         cardCurrentLeechLevel = (cardCurrentLeechLevel < leechTreshold) ? cardCurrentLeechLevel : leechTreshold;
         cardCurrentLeechLevel = (cardCurrentLeechLevel > 0) ? cardCurrentLeechLevel : 0;
         isLeech = (cardCurrentLeechLevel == leechTreshold) ? true : false;
-
-
-        if (isLeech) //what to do if is leech - 4 days interval
-        {
-            MemoryIndex memoryIndex = GameObject.Find("MemoryIndex").GetComponent<MemoryIndex>();
-            memoryIndex.currentInterval = 345600;
-        }
     }
 
 
