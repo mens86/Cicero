@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using TMPro;
+using System.Linq;
 
 
 [Serializable()]
@@ -174,18 +175,69 @@ public class UIManager : MonoBehaviour
 
         var answersToCurrentQuestion = gameManager.questions[gameManager.currentQuestion].Answers;
         int scoreForEachAnswer = gameManager.questions[gameManager.currentQuestion].AddScore;
-        string CorrectAnswers = "";
+        string coloredCorrectAnswers = "";
+        string coloredChosenAnswers = "";
         int maxScoreForCurrentAnswer = answersToCurrentQuestion.Length * scoreForEachAnswer;
+
+        List<string> pickedAnsw = gameManager.PickedAnswers.Select(ad => ad.infoTextObject.text).ToList();
+        List<string> actualAnswers = new List<string>();
         foreach (var a in answersToCurrentQuestion)
         {
-            CorrectAnswers += a.groupOfSynonyms[0] + "\n"; // Questo si può fare meglio e mostrare tutti i sinonimi con un forlooppino. Si tratta di decidere.
+            string correctAnswer = a.GetCorrectAnswer(pickedAnsw);
+            if (correctAnswer != "")
+            {
+                actualAnswers.Add(correctAnswer);
+            }
         }
+        List<string> actualAnswersWithSynonyms = new List<string>();
+        foreach (var a in answersToCurrentQuestion)
+        {
+            string correctAnswer = "";
+            for (int i = 0; i < a.groupOfSynonyms.Count; i++)
+            {
+                if (0 < i && i < a.groupOfSynonyms.Count)
+                {
+                    correctAnswer += " / ";
+                }
+                correctAnswer += a.groupOfSynonyms[i];
+            }
+            actualAnswersWithSynonyms.Add(correctAnswer);
+        }
+
+        for (int i = 0; i < actualAnswers.Count; i++)
+        {
+            if (!pickedAnsw.Contains(actualAnswers[i]))
+            {
+                coloredCorrectAnswers += "<color=grey>" + actualAnswersWithSynonyms[i] + "</color > \n";
+            }
+            else
+            {
+                coloredCorrectAnswers += "<color=green>" + actualAnswersWithSynonyms[i] + "</color > \n";
+            }
+
+        }
+
+        foreach (var pa in pickedAnsw)
+        {
+            if (actualAnswers.Contains(pa))
+            {
+                coloredChosenAnswers += "<color=green>" + pa + "</color > \n";
+            }
+            else
+            {
+                coloredChosenAnswers += "<color=red>" + pa + "</color > \n";
+            }
+        }
+
+
+
+
 
         switch (type)
         {
             case ResolutionScreenType.Correct:
                 uIElements.ResolutionBG.color = parameters.CorrectBGColor;
-                uIElements.ResolutionStateInfoText.text = "Exactum!";
+                uIElements.ResolutionStateInfoText.text = "<color=green> Exactum! </color>";
                 uIElements.RightAnswerWasText.text = "";
                 uIElements.RightAnswerText.text = "";
                 uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
@@ -193,26 +245,26 @@ public class UIManager : MonoBehaviour
 
             case ResolutionScreenType.Incorrect:
                 uIElements.ResolutionBG.color = parameters.IncorrectBGColor;
-                uIElements.ResolutionStateInfoText.text = "Erratum!";
+                uIElements.ResolutionStateInfoText.text = "<color=red> Erratum! </color>";
                 uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
-                uIElements.RightAnswerText.text = CorrectAnswers;
+                uIElements.RightAnswerText.text = coloredCorrectAnswers + "\n delegisti: \n" + coloredChosenAnswers;
                 uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
 
                 break;
 
             case ResolutionScreenType.LessThanCorrect:
                 uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
-                uIElements.ResolutionStateInfoText.text = "Paene!";
+                uIElements.ResolutionStateInfoText.text = "<color=orange> Paene! </color>";
                 uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
-                uIElements.RightAnswerText.text = CorrectAnswers;
+                uIElements.RightAnswerText.text = coloredCorrectAnswers + "\n delegisti: \n" + coloredChosenAnswers;
                 uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
             case ResolutionScreenType.MoreThanCorrect:
                 uIElements.ResolutionBG.color = parameters.IntermediateBGColor;
-                uIElements.ResolutionStateInfoText.text = "Nimis!";
+                uIElements.ResolutionStateInfoText.text = "<color=orange> Nimis! </color>";
                 uIElements.RightAnswerWasText.text = "Emendata responsio est: ";
-                uIElements.RightAnswerText.text = CorrectAnswers;
+                uIElements.RightAnswerText.text = coloredCorrectAnswers + "\n delegisti: \n" + coloredChosenAnswers;
                 uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
                 break;
 
