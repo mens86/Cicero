@@ -77,7 +77,7 @@ public class Question
         if (qq.Any() && qq.Count < actualAnswers.Count)
         {
             scoreMultiplier = actualAnswers.Count - qq.Count;
-            if (qq.Count == 1) //la discrimine per dire "eran quasi tutte giuste" è che se ne sbagli solo una (indipendentemente dal numero di risposte di una domanda)
+            if (qq.Count == 1) //la discrimine per dire "eran quasi tutte giuste" è che se ne fai giusta solo una (indipendentemente dal numero di risposte di una domanda)
             {
                 memoryIndex.UpdateMemoryIndex(this, UserAnswerState.AlmostAllRight);
             }
@@ -90,8 +90,10 @@ public class Question
         //più delle giuste: 
         if (!qq.Any() && pp.Any())
         {
-            scoreMultiplier = (float)actualAnswers.Count / (float)pickedAnswers.Count;
-            if (pp.Count == 1) //la discrimine per dire "eran quasi tutte giuste" è che se ne sbagli solo una (indipendentemente dal numero di risposte di una domanda)
+            scoreMultiplier = (float)actualAnswers.Count * (((float)actualAnswers.Count) / (float)pickedAnswers.Count);
+
+            Debug.Log(scoreMultiplier);
+            if (pp.Count == 1)
             {
                 memoryIndex.UpdateMemoryIndex(this, UserAnswerState.AlmostAllRight);
             }

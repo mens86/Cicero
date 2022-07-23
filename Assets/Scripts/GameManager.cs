@@ -340,11 +340,9 @@ public class GameManager : MonoBehaviour
 
     public void AnotherSessionButton()
     {
-
         UIManager.gotItButton.SetActive(false);
         UIManager.uIElements.ResolutionScreenAnimator.SetInteger(UIManager.resStateParaHash, 2);
         memoryIndex.Save(memoryIndex.persistentQuestionList);
-        events.CurrentFinalScore = 0;
         events.StartupHighScore = PlayerPrefs.GetFloat(GameUtility.SavePrefKey);
         timerDefaultColor = timerText.color;
         timerStateParaHash = Animator.StringToHash("TimerState");
