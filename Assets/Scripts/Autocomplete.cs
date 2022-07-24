@@ -12,29 +12,28 @@ public class Autocomplete : MonoBehaviour
     public RectTransform prefab;
     public List<string> allAnswers;
     public GameManager gameManager;
-
+    public TextMeshProUGUI inputFieldText;
+    public TextMeshProUGUI autoCompleteText;
 
 
     public RectTransform firstButton;
-    public string currentTextInInputField = "   ";
+    public string currentTextInInputField = "";
+    public string oldtext = "";
+
 
 
 
 
     private void Awake()
     {
-
         inputField.ActivateInputField();
         inputField.onValueChanged.AddListener(OnInputValueChanged);
         allAnswers.Sort();
-
     }
-
 
 
     private void OnInputValueChanged(string newText)
     {
-
         if (inputField.text == "")
         {
             ClearResults();
@@ -44,11 +43,32 @@ public class Autocomplete : MonoBehaviour
             ClearResults();
             FillResults(GetResults(newText));
         }
-        currentTextInInputField = newText;
+
+
+        //text hightlight    
+        if (GetResults(newText).Count != 0 && newText.Length > oldtext.Length)
+        {
+            currentTextInInputField = GetResults(newText)[0];
+
+            if (currentTextInInputField != "" && inputField.text != "")
+            {
+                autoCompleteText.text = "";
+                for (int i = inputField.text.Length; i < currentTextInInputField.Length; i++)
+                {
+                    autoCompleteText.text += "<mark =#000000AA>" + currentTextInInputField[i] + "</mark>";
+                }
+            }
+            else
+            {
+                autoCompleteText.text = "";
+            }
+        }
+        else
+        {
+            autoCompleteText.text = "";
+        }
+        oldtext = newText;
     }
-
-
-
 
 
 
@@ -110,9 +130,9 @@ public class Autocomplete : MonoBehaviour
     {
 
 
-        List<string> results = allAnswers.FindAll((str) => str.IndexOf(input.ToLower()) >= 0);
+        //List<string> results = allAnswers.FindAll((str) => str.IndexOf(input.ToLower()) >= 0);
         //per fare ricerca solo con inizio parola
-        //List<string> results = mockData.Where(str => str.Length >= input.Length).Where(str => str.Substring(0, input.Length).IndexOf(input) >= 0).ToList();     
+        List<string> results = allAnswers.Where(str => str.Length >= input.Length).Where(str => str.Substring(0, input.Length).IndexOf(input) >= 0).ToList();
 
 
 

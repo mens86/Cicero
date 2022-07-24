@@ -176,7 +176,7 @@ public class CustomCaret : MonoBehaviour
 
 
 
-
+    public Autocomplete autocomplete;
     float currentLenght = 0f;
     float lastLenght = 0f;
     bool WasBackSpaceUsed = false;

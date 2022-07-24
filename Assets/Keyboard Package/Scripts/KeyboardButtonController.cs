@@ -11,6 +11,9 @@ public class KeyboardButtonController : MonoBehaviour
     [SerializeField] Image containerIcon;
     [SerializeField] TextMeshProUGUI containerText;
     [SerializeField] TextMeshProUGUI containerActionText;
+    public Autocomplete autocomplete;
+    public CustomCaret customCaret;
+    public Text deletedLetter;
 
     private void Start()
     {
@@ -55,6 +58,7 @@ public class KeyboardButtonController : MonoBehaviour
         }
         EnlightButton();
     }
+
     public void SubmitWord()
     {
         if (KeybManager.Instance != null)
@@ -83,5 +87,19 @@ public class KeyboardButtonController : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         Color releasedButtonColor = new Color32(0, 0, 0, 0);
         containerFillImage.GetComponent<Image>().color = releasedButtonColor;
+    }
+
+
+    public void BackspaceButton()
+    {
+        if (autocomplete.autoCompleteText.text == "")
+        {
+            DeleteLetter();
+            customCaret.backspace(deletedLetter);
+        }
+        else
+        {
+            autocomplete.autoCompleteText.text = "";
+        }
     }
 }
