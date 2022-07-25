@@ -44,7 +44,7 @@ public class Autocomplete : MonoBehaviour
         }
 
 
-        //text hightlight    
+        //text filled and hightlighted      
         if (GetResults(newText).Count != 0 && newText.Length > oldtext.Length)
         {
             currentTextInInputField = GetResults(newText)[0];
@@ -54,7 +54,8 @@ public class Autocomplete : MonoBehaviour
                 autoCompleteText.text = "";
                 for (int i = inputField.text.Length; i < currentTextInInputField.Length; i++)
                 {
-                    autoCompleteText.text += "<mark =#000000AA>" + currentTextInInputField[i] + "</mark>";
+                    //autoCompleteText.text += "<mark =#000000AA>" + currentTextInInputField[i] + "</mark>"; //questo era quando non avevo messo un oggetto a evidenziare
+                    autoCompleteText.text += currentTextInInputField[i];
                 }
             }
             else
@@ -67,6 +68,9 @@ public class Autocomplete : MonoBehaviour
             autoCompleteText.text = "";
         }
         oldtext = newText;
+
+
+
     }
 
 
@@ -129,6 +133,7 @@ public class Autocomplete : MonoBehaviour
         {
             answersToSubtract.Add(answer.infoTextObject.text);
         }
+
         results.Sort();
         return results.Except(answersToSubtract).ToList();
 

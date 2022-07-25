@@ -24,7 +24,7 @@ public class BackSpaceHold : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     {
         if (!_pressed)
             return;
-        Debug.Log(timeButtonPressed);
+
         timeButtonPressed += Time.deltaTime;
         if (timeButtonPressed > 0.5f)
         {
