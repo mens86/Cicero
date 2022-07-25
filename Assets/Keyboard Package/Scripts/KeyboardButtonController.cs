@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
-public class KeyboardButtonController : MonoBehaviour
+public class KeyboardButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+
+
     [SerializeField] Image containerBorderImage;
     [SerializeField] Image containerFillImage;
     [SerializeField] Image containerIcon;
@@ -38,7 +41,7 @@ public class KeyboardButtonController : MonoBehaviour
         if (KeybManager.Instance != null)
         {
             KeybManager.Instance.AddLetter(containerText.text);
-            EnlightButton();
+
         }
         else
         {
@@ -56,7 +59,7 @@ public class KeyboardButtonController : MonoBehaviour
         {
             Debug.Log("Last char deleted");
         }
-        EnlightButton();
+
     }
 
     public void SubmitWord()
@@ -69,29 +72,36 @@ public class KeyboardButtonController : MonoBehaviour
         {
             Debug.Log("Submitted successfully!");
         }
-        EnlightButton();
+
     }
 
 
-
-    //sta merda, corutine compresa, per cambiare colore al click, visto che non posso usare l'highlighted se voglio allargare i bottoni laterali.
-    public void EnlightButton()
+    bool _pressed = false;
+    public void OnPointerDown(PointerEventData eventData)
     {
-        Color pressedButtonColor = new Color32(25, 77, 255, 255);
+        _pressed = true;
+        Color pressedButtonColor = new Color32(12, 209, 69, 255);
         containerFillImage.GetComponent<Image>().color = pressedButtonColor;
-        waitHalfSec = PleasewaitHalfSec();
-        StartCoroutine(waitHalfSec);
     }
-    IEnumerator PleasewaitHalfSec()
+
+    public void OnPointerUp(PointerEventData eventData)
     {
-        yield return new WaitForSeconds(0.1f);
+        _pressed = false;
         Color releasedButtonColor = new Color32(0, 0, 0, 0);
         containerFillImage.GetComponent<Image>().color = releasedButtonColor;
-    }
 
+    }
+    void Update()
+    {
+        if (!_pressed)
+            return;
+
+    }
 
     public void BackspaceButton()
     {
+
+
         if (autocomplete.autoCompleteText.text == "")
         {
             DeleteLetter();
@@ -101,5 +111,8 @@ public class KeyboardButtonController : MonoBehaviour
         {
             autocomplete.autoCompleteText.text = "";
         }
+
     }
+
+
 }

@@ -110,17 +110,6 @@ public class Autocomplete : MonoBehaviour
 
             child.SetParent(resultsParent);
 
-
-            //evidenzia il primo bottone
-            if (child.GetComponentInChildren<TextMeshProUGUI>().text == results[0])
-            {
-                firstButton = child;
-
-                ColorBlock colors = child.GetComponentInChildren<Button>().colors;
-                colors.highlightedColor = new Color32(78, 255, 208, 255);
-                child.GetComponentInChildren<Image>().color = colors.highlightedColor;
-            }
-
         }
 
     }

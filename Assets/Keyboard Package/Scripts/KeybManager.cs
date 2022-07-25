@@ -59,24 +59,6 @@ public class KeybManager : MonoBehaviour
                 firstButton.GetComponent<AnswerData>().SwitchState();
             }
         }
-        /*
-        //questo è come veniva submittata la parola prima, col doppio passaggio
-        {
-            if (textBox.text != res[0])
-            {
-                textBox.text = res[0];
-                textBox.ActivateInputField();
-                GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.ActivateInputField();
-            }
 
-            else
-            {
-                GameObject.Find("InputField").GetComponent<Autocomplete>().firstButton.GetComponent<Button>().onClick.Invoke();
-                //inputField.text = "";
-                textBox.ActivateInputField();
-            }
-
-        }
-        */
     }
 }
