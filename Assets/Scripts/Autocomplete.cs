@@ -28,7 +28,6 @@ public class Autocomplete : MonoBehaviour
     {
         inputField.ActivateInputField();
         inputField.onValueChanged.AddListener(OnInputValueChanged);
-        allAnswers.Sort();
     }
 
 
@@ -130,6 +129,7 @@ public class Autocomplete : MonoBehaviour
         {
             answersToSubtract.Add(answer.infoTextObject.text);
         }
+        results.Sort();
         return results.Except(answersToSubtract).ToList();
 
 
