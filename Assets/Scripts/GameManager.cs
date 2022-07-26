@@ -121,6 +121,8 @@ public class GameManager : MonoBehaviour
 
     public void UpdateAnswers(AnswerData newAnswer)
     {
+        AnswerData answerRemoved = null;
+
         bool alreadyPicked = false;
         for (int i = 0; i < PickedAnswers.Count; i++)
         {
@@ -132,24 +134,26 @@ public class GameManager : MonoBehaviour
 
         if (alreadyPicked)
         {
-
             int indexToRemove = -1;
             for (int i = 0; i < PickedAnswers.Count; i++)
             {
                 if (PickedAnswers[i].infoTextObject.text == newAnswer.infoTextObject.text)
                 {
                     indexToRemove = i;
+                    answerRemoved = newAnswer;
+
+
                 }
             }
             PickedAnswers.RemoveAt(indexToRemove);
-
-            UIManager.ShowPickedAnswers(PickedAnswers);
+            UIManager.ShowPickedAnswers(PickedAnswers, answerRemoved, newAnswer);
         }
         else
         {
+            answerRemoved = null;
             PickedAnswers.Add(newAnswer);
             GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
-            UIManager.ShowPickedAnswers(PickedAnswers);
+            UIManager.ShowPickedAnswers(PickedAnswers, answerRemoved, newAnswer);
         }
 
     }
@@ -163,7 +167,7 @@ public class GameManager : MonoBehaviour
 
     public void Display()
     {
-        UIManager.ErasePickedAnswers(PickedAnswers);
+        UIManager.ErasePickedAnswers();
         EraseAnswers();
         GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
         var question = questions[currentQuestion];

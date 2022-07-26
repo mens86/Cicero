@@ -12,6 +12,7 @@ public class AnswerData : MonoBehaviour
     [SerializeField] public TextMeshProUGUI MasteryNumber;
 
 
+
     [Header("Textures")]
     [SerializeField] Sprite uncheckedToggle;
     [SerializeField] Sprite checkedToggle;
@@ -31,6 +32,8 @@ public class AnswerData : MonoBehaviour
             return _rect;
         }
     }
+
+
 
 
     private int _answerIndex = -1;

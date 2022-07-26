@@ -7,6 +7,8 @@ using TMPro;
 using System.Linq;
 
 
+
+
 [Serializable()]
 public struct UIManagerParameters
 {
@@ -31,6 +33,8 @@ public struct UIElements
 {
 
 
+    [SerializeField] RectTransform effectsOnScreen;
+    public RectTransform EffectsOnScreen { get { return effectsOnScreen; } }
 
     [SerializeField] RectTransform pickedanswersContentArea;
     public RectTransform PickedAnswersContentArea { get { return pickedanswersContentArea; } }
@@ -90,6 +94,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameEvents events;
     [SerializeField] GameManager gameManager;
     [SerializeField] public GameObject gotItButton;
+    [SerializeField] public RectTransform resolutionBGRect;
+
+    [Header("Animations")]
+    [SerializeField] public GameObject smokeAnimation;
+    [SerializeField] public GameObject FireworksAnimation;
 
     [Header("UI Elements (Prefabs)")]
 
@@ -241,10 +250,15 @@ public class UIManager : MonoBehaviour
         {
             case ResolutionScreenType.Correct:
                 uIElements.ResolutionBG.color = parameters.CorrectBGColor;
-                uIElements.ResolutionStateInfoText.text = "<color=green> Exactum! </color>";
+                uIElements.ResolutionStateInfoText.text = "<color=green> \n\n\n\n\n\n\nExactum! </color>";
                 uIElements.RightAnswerWasText.text = "";
                 uIElements.RightAnswerText.text = "";
                 uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
+                GameObject fireworks = Instantiate(FireworksAnimation, resolutionBGRect.transform) as GameObject;
+                ParticleSystem ps = fireworks.GetComponent<ParticleSystem>();
+                var main = ps.main;
+                main.simulationSpeed = 0.5f;
+
                 break;
 
             case ResolutionScreenType.Incorrect:
@@ -300,7 +314,7 @@ public class UIManager : MonoBehaviour
         while ((scoreMoreThanZero) ? scoreValue < events.CurrentFinalScore : scoreValue > events.CurrentFinalScore)
         {
             scoreValue += scoreMoreThanZero ? 1 : -1;
-            uIElements.FinalscoreText.text = "puncta: " + scoreValue.ToString();
+            uIElements.FinalscoreText.text = "puncta:\n " + scoreValue.ToString();
 
             yield return null;
         }
@@ -316,34 +330,69 @@ public class UIManager : MonoBehaviour
 
 
 
-    public void ShowPickedAnswers(List<AnswerData> picked)
+    public void ShowPickedAnswers(List<AnswerData> pickedAnswers, AnswerData answerRemoved, AnswerData answerPicked)
     {
-        //foreach (var i in picked){Debug.Log(i.infoTextObject.text.ToString());}
-        //Debug.Log("--------");
-
         float offset = 0 - parameters.Margins;
 
-        ErasePickedAnswers(picked);
+        var pickedAnswersClone = GameObject.FindGameObjectsWithTag("PickedAnswer");
+        if (answerRemoved != null)
+        {
+            foreach (var pickedAnswerClone in pickedAnswersClone)
+            {
+                if (pickedAnswerClone.GetComponent<AnswerData>().infoTextObject.text == answerRemoved.infoTextObject.text)
+                {
+                    //create temporary object for smoke effect
+                    GameObject temp = new GameObject();
+                    temp.transform.parent = uIElements.EffectsOnScreen.transform;
+                    temp.AddComponent<RectTransform>();
+                    temp.GetComponent<RectTransform>().position = new Vector3(pickedAnswerClone.GetComponent<RectTransform>().position.x - 800, pickedAnswerClone.GetComponent<RectTransform>().position.y - 1050, 0);
+                    StartCoroutine(ExecuteAfterTime(0.3f));
+                    IEnumerator ExecuteAfterTime(float time)
+                    {
+                        yield return new WaitForSeconds(time);
+                        Destroy(temp);
+                    }
+                    //
 
-        for (int i = 0; i < picked.Count; i++)
+                    GameObject smoke = Instantiate(smokeAnimation, temp.GetComponent<RectTransform>(), false) as GameObject;
+
+                    Destroy(pickedAnswerClone);
+                }
+            }
+        }
+        else
+        {
+            AnswerData answer = (AnswerData)Instantiate(pickedAnswerPrefab, uIElements.PickedAnswersContentArea);
+            answer.infoTextObject.text = answerPicked.infoTextObject.text;
+        }
+
+        //vecchio modo di mettere e togliere le pickedanswer, sostituito con uno un pelo più efficiente che permette anche di piazzare l'effetto fumo. 
+        //Se fra un po' vedo che funzia ancora, posso cancellare questo
+
+        //ErasePickedAnswers();
+        /*
+        for (int i = 0; i < pickedAnswers.Count; i++)
         {
             AnswerData newAnswer = (AnswerData)Instantiate(pickedAnswerPrefab, uIElements.PickedAnswersContentArea);
-            newAnswer.UpdateData(picked[i].infoTextObject.text.ToString(), i);
+            newAnswer.UpdateData(pickedAnswers[i].infoTextObject.text.ToString(), i);
 
             newAnswer.Rect.anchoredPosition = new Vector2(0, offset);
 
             offset -= (newAnswer.Rect.sizeDelta.y + parameters.Margins);
             uIElements.PickedAnswersContentArea.sizeDelta = new Vector2(uIElements.PickedAnswersContentArea.sizeDelta.x, offset * -1);
         }
+        */
+
+
     }
 
-    public void ErasePickedAnswers(List<AnswerData> picked)
+    public void ErasePickedAnswers()
     {
-        var clones = GameObject.FindGameObjectsWithTag("PickedAnswer");
-        foreach (var clone in clones)
+        var pickedAnswersClone = GameObject.FindGameObjectsWithTag("PickedAnswer");
+
+        foreach (var pickedAnswer in pickedAnswersClone)
         {
-            //Debug.Log("vediamo un p0'");
-            Destroy(clone);
+            Destroy(pickedAnswer);
         }
     }
 
