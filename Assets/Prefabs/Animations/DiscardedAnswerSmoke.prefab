@@ -4744,7 +4744,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsTrail: 0
-  m_Scale3D: {x: 600, y: 200, z: 200}
+  m_Scale3D: {x: 550, y: 100, z: 200}
   m_AnimatableProperties: []
   m_Particles:
   - {fileID: 19800000}

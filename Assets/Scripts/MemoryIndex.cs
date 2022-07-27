@@ -213,11 +213,12 @@ public class MemoryIndex : MonoBehaviour
             currentInterval = maximumInterval;
         }
 
-        cardProperties.cardCurrentInterval = currentInterval;
+
         if (cardProperties.isLeech)
         {
-            cardProperties.cardCurrentInterval = 345600;
+            currentInterval = 345600;
         }
+        cardProperties.cardCurrentInterval = currentInterval;
         cardProperties.cardExpDate = SetExpiringDate();
         cardProperties.cardKnowledge = cardProperties.cardKnowledge * question.Answers.Length;
 

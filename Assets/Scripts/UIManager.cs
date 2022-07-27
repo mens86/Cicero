@@ -379,12 +379,11 @@ public class UIManager : MonoBehaviour
 
     }
 
-    public void EffectOnDestroy(RectTransform objectToDestroy, GameObject AnimationPrefab, int adjustx, int adjusty)
+    public void EffectOnDestroy(RectTransform objectToDestroy, GameObject AnimationPrefab, int adjustx, int adjusty) //fa proseguire l'animazione dopo che si è distrutto l'oggetto
     {
         GameObject temp = new GameObject();
         temp.transform.parent = uIElements.EffectsOnScreen.transform;
         temp.AddComponent<RectTransform>();
-        Debug.Log(objectToDestroy.position.y);
         temp.GetComponent<RectTransform>().position = new Vector3(objectToDestroy.position.x - adjustx, objectToDestroy.position.y - adjusty, 0);
         StartCoroutine(ExecuteAfterTime(3.3f));
         IEnumerator ExecuteAfterTime(float time)

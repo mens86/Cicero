@@ -65,6 +65,31 @@ public class DeckSelector : MonoBehaviour
             Category.CategoryName.text = listOfCategories[i];
             Category.name = Category.CategoryName.text + "ThisIsACategory";
             ShowDecks(Category);
+            AssignMedal(Category);
+
+        }
+    }
+
+
+    public void AssignMedal(DeckCategories Category)
+    {
+        Debug.Log(Category.categoryMasteryNumber);
+        if (Category.categoryMasteryNumber < 50)
+        {
+            Category.medalSpot.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+
+        }
+        if (Category.categoryMasteryNumber >= 50 && Category.categoryMasteryNumber < 75)
+        {
+            Category.medalSpot.sprite = Category.bronzeMedal;
+        }
+        if (Category.categoryMasteryNumber >= 75 && Category.categoryMasteryNumber < 90)
+        {
+            Category.medalSpot.sprite = Category.silverMedal;
+        }
+        if (Category.categoryMasteryNumber >= 90)
+        {
+            Category.medalSpot.sprite = Category.goldMedal;
         }
     }
 
@@ -95,16 +120,27 @@ public class DeckSelector : MonoBehaviour
 
     public void ShowDecks(DeckCategories Category)
     {
+        int count = 0;
+        float sumOfdeckMasteries = 0;
+
         for (int u = 0; u < availableDecks.Count; u++)
         {
+
             if (CategoryParser(availableDecks[u]) == Category.CategoryName.text)
             {
                 AnswerData deck = (AnswerData)Instantiate(deckSelectPrefab, DecksContentArea);
                 deck.infoTextObject.text = availableDecks[u].name;
                 deck.MasteryNumber.text = CalculateDeckMasteryNumber(deck);
                 deck.name = Category.CategoryName.text;
+
+                //category mastery
+                count += 1;
+                sumOfdeckMasteries += float.Parse(deck.MasteryNumber.text.Substring(0, deck.MasteryNumber.text.Length - 1));
             }
         }
+
+        Category.categoryMasteryNumber = (sumOfdeckMasteries * 100) / (100 * count);
+
     }
 
     public void HideAndShowDecksButton(DeckCategories Category)
@@ -278,7 +314,7 @@ public class DeckSelector : MonoBehaviour
                 }
             }
         }
-        Debug.Log("saving selected decks");
+        //Debug.Log("saving selected decks");
         string stringedDict = string.Join(",", preferences.Select(m => m.Key + ":" + m.Value).ToArray());
         PlayerPrefs.SetString("Deckpref", stringedDict);
     }
