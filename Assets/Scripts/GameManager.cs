@@ -152,6 +152,7 @@ public class GameManager : MonoBehaviour
         {
             answerRemoved = null;
             PickedAnswers.Add(newAnswer);
+            UIManager.EffectOnDestroy(newAnswer.GetComponent<RectTransform>(), UIManager.pickedAnswerPopAnimation, 0, 0);
             GameObject.Find("InputField").GetComponent<Autocomplete>().inputField.text = "";
             UIManager.ShowPickedAnswers(PickedAnswers, answerRemoved, newAnswer);
         }

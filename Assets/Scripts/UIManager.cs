@@ -93,11 +93,15 @@ public class UIManager : MonoBehaviour
     [Header("References")]
     [SerializeField] GameEvents events;
     [SerializeField] GameManager gameManager;
+    [SerializeField] public GameObject textCorrectObject;
+    [SerializeField] public GameObject scoreTextObject;
+    [SerializeField] public TextMeshProUGUI scoreTextCorrect;
     [SerializeField] public GameObject gotItButton;
     [SerializeField] public RectTransform resolutionBGRect;
 
     [Header("Animations")]
-    [SerializeField] public GameObject smokeAnimation;
+    [SerializeField] public GameObject discardedAnswerSmokeAnimation;
+    [SerializeField] public GameObject pickedAnswerPopAnimation;
     [SerializeField] public GameObject FireworksAnimation;
 
     [Header("UI Elements (Prefabs)")]
@@ -145,7 +149,6 @@ public class UIManager : MonoBehaviour
     void DisplayResolution(ResolutionScreenType type, float score)
     {
         UpdateResUI(type, score);
-        uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 2);
         uIElements.GameCanvasGroup.blocksRaycasts = false;
 
         if (type == ResolutionScreenType.Correct)
@@ -160,6 +163,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
+            uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 2);
             gotItButton.SetActive(true);
         }
 
@@ -169,7 +173,10 @@ public class UIManager : MonoBehaviour
     {
 
         yield return new WaitForSeconds(ResolutionDelayTime);
-        uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 1);
+        textCorrectObject.SetActive(false);
+        scoreTextObject.SetActive(false);
+
+        //uIElements.ResolutionScreenAnimator.SetInteger(resStateParaHash, 1);
         uIElements.GameCanvasGroup.blocksRaycasts = true;
         if (!gameManager.IsFinished)
         {
@@ -249,12 +256,11 @@ public class UIManager : MonoBehaviour
         switch (type)
         {
             case ResolutionScreenType.Correct:
-                uIElements.ResolutionBG.color = parameters.CorrectBGColor;
-                uIElements.ResolutionStateInfoText.text = "<color=green> \n\n\n\n\n\n\nExactum! </color>";
-                uIElements.RightAnswerWasText.text = "";
-                uIElements.RightAnswerText.text = "";
-                uIElements.ResolutionScoreText.text = "puncta: " + score + "/" + maxScoreForCurrentAnswer;
-                GameObject fireworks = Instantiate(FireworksAnimation, resolutionBGRect.transform) as GameObject;
+
+                textCorrectObject.SetActive(true);
+                scoreTextObject.SetActive(true);
+                scoreTextCorrect.text = "+" + score;
+                GameObject fireworks = Instantiate(FireworksAnimation, uIElements.EffectsOnScreen.transform) as GameObject;
                 ParticleSystem ps = fireworks.GetComponent<ParticleSystem>();
                 var main = ps.main;
                 main.simulationSpeed = 0.5f;
@@ -341,21 +347,8 @@ public class UIManager : MonoBehaviour
             {
                 if (pickedAnswerClone.GetComponent<AnswerData>().infoTextObject.text == answerRemoved.infoTextObject.text)
                 {
-                    //create temporary object for smoke effect
-                    GameObject temp = new GameObject();
-                    temp.transform.parent = uIElements.EffectsOnScreen.transform;
-                    temp.AddComponent<RectTransform>();
-                    temp.GetComponent<RectTransform>().position = new Vector3(pickedAnswerClone.GetComponent<RectTransform>().position.x - 800, pickedAnswerClone.GetComponent<RectTransform>().position.y - 1050, 0);
-                    StartCoroutine(ExecuteAfterTime(0.3f));
-                    IEnumerator ExecuteAfterTime(float time)
-                    {
-                        yield return new WaitForSeconds(time);
-                        Destroy(temp);
-                    }
-                    //
 
-                    GameObject smoke = Instantiate(smokeAnimation, temp.GetComponent<RectTransform>(), false) as GameObject;
-
+                    EffectOnDestroy(pickedAnswerClone.GetComponent<RectTransform>(), discardedAnswerSmokeAnimation, 800, 1050);
                     Destroy(pickedAnswerClone);
                 }
             }
@@ -384,6 +377,22 @@ public class UIManager : MonoBehaviour
         */
 
 
+    }
+
+    public void EffectOnDestroy(RectTransform objectToDestroy, GameObject AnimationPrefab, int adjustx, int adjusty)
+    {
+        GameObject temp = new GameObject();
+        temp.transform.parent = uIElements.EffectsOnScreen.transform;
+        temp.AddComponent<RectTransform>();
+        Debug.Log(objectToDestroy.position.y);
+        temp.GetComponent<RectTransform>().position = new Vector3(objectToDestroy.position.x - adjustx, objectToDestroy.position.y - adjusty, 0);
+        StartCoroutine(ExecuteAfterTime(3.3f));
+        IEnumerator ExecuteAfterTime(float time)
+        {
+            yield return new WaitForSeconds(time);
+            Destroy(temp);
+        }
+        GameObject animation = Instantiate(AnimationPrefab, temp.GetComponent<RectTransform>(), false) as GameObject;
     }
 
     public void ErasePickedAnswers()
