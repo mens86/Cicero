@@ -72,8 +72,7 @@ public class DeckSelector : MonoBehaviour
 
 
     public void AssignMedal(DeckCategories Category)
-    {
-        Debug.Log(Category.categoryMasteryNumber);
+    {        
         if (Category.categoryMasteryNumber < 50)
         {
             Category.medalSpot.GetComponent<Image>().color = new Color(0, 0, 0, 0);

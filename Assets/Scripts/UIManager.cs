@@ -385,7 +385,7 @@ public class UIManager : MonoBehaviour
         temp.transform.parent = uIElements.EffectsOnScreen.transform;
         temp.AddComponent<RectTransform>();
         temp.GetComponent<RectTransform>().position = new Vector3(objectToDestroy.position.x - adjustx, objectToDestroy.position.y - adjusty, 0);
-        StartCoroutine(ExecuteAfterTime(3.3f));
+        StartCoroutine(ExecuteAfterTime(1f));
         IEnumerator ExecuteAfterTime(float time)
         {
             yield return new WaitForSeconds(time);
