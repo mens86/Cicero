@@ -347,6 +347,7 @@ MonoBehaviour:
   timerAlmostOutColor: {r: 1, g: 0, b: 0, a: 1}
   PickedAnswers: []
   autocomplete: {fileID: 1522727654}
+  audioManager: {fileID: 821556640}
   currentQuestion: 0
   isPaused: 0
 --- !u!4 &154132956
@@ -2594,7 +2595,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &741817356
 MonoBehaviour:
@@ -2929,7 +2930,7 @@ MonoBehaviour:
       Loop: 0
     Source: {fileID: 0}
   - name: GameMusic
-    clip: {fileID: 8300000, guid: 8b9ff5ff07dc3844e9793aed740a9687, type: 3}
+    clip: {fileID: 8300000, guid: a990edc353e055748a2c57ad1a44e19d, type: 3}
     parameters:
       Volume: 0.5
       Pitch: 1
@@ -2949,7 +2950,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &871302094
 GameObject:
@@ -4173,7 +4174,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 154132955}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: QuitGame
+        m_MethodName: ToMainMenuButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

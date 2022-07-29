@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
 
     public List<AnswerData> PickedAnswers = new List<AnswerData>();
     public Autocomplete autocomplete;
+    public AudioManager audioManager;
     private List<int> FinishedQuestions = new List<int>();
     public int currentQuestion = 0;
     private int timerStateParaHash = 0;
@@ -357,5 +358,14 @@ public class GameManager : MonoBehaviour
         InitQuestions_WithSelectedDecks(SelectedDecks_names);
         Display();
     }
+
+    public void ToMainMenuButton()
+    {
+        audioManager.StopSound("GameMusic");
+        SceneManager.LoadScene("Menu");
+
+
+    }
+
 }
 
