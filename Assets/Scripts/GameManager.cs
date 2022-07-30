@@ -305,7 +305,7 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene("Scenes/Schola");
     }
 
     public void QuitGame()
@@ -361,10 +361,8 @@ public class GameManager : MonoBehaviour
 
     public void ToMainMenuButton()
     {
-        audioManager.StopSound("GameMusic");
-        SceneManager.LoadScene("Menu");
-
-
+        //audioManager.StopSound("GameMusic");
+        SceneManager.LoadScene("Scenes/Menu");
     }
 
 }

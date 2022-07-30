@@ -72,7 +72,7 @@ public class DeckSelector : MonoBehaviour
 
 
     public void AssignMedal(DeckCategories Category)
-    {        
+    {
         if (Category.categoryMasteryNumber < 50)
         {
             Category.medalSpot.GetComponent<Image>().color = new Color(0, 0, 0, 0);
@@ -275,6 +275,7 @@ public class DeckSelector : MonoBehaviour
     }
 
     public void SavePreferences()
+
     {
         Dictionary<string, string> preferences = new Dictionary<string, string>();
 
@@ -316,6 +317,7 @@ public class DeckSelector : MonoBehaviour
         //Debug.Log("saving selected decks");
         string stringedDict = string.Join(",", preferences.Select(m => m.Key + ":" + m.Value).ToArray());
         PlayerPrefs.SetString("Deckpref", stringedDict);
+
     }
 
     public void LoadPreferences()
