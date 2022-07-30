@@ -5337,7 +5337,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: v. 0.43
+  m_text: v. 0.42
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3ab8f94a8e4dd744c99c73fedd26f8f8, type: 2}
   m_sharedMaterial: {fileID: 2383952268681313545, guid: 3ab8f94a8e4dd744c99c73fedd26f8f8, type: 2}
@@ -5762,9 +5762,9 @@ MonoBehaviour:
   settings: Settings
   quit: Quit
   social1Icon: {fileID: -2873110322805508246, guid: 076197847ba151147b3f5ca6d92ef0fd, type: 3}
-  social1Link: https://twitter.com/gabbissonnette
+  social1Link: https://twitter.com/brun_riccardo
   social2Icon: {fileID: -755786555384268329, guid: 076197847ba151147b3f5ca6d92ef0fd, type: 3}
-  social2Link: https://www.instagram.com/bissonnettegab/
+  social2Link: https://www.instagram.com/brunriccardo/
   social3Icon: {fileID: 3058055706062087063, guid: 076197847ba151147b3f5ca6d92ef0fd, type: 3}
   social3Link: https://discord.com/
   defaultVolume: 0.8

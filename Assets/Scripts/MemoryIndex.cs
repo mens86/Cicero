@@ -43,7 +43,7 @@ public class MemoryIndex : MonoBehaviour
 
 
     void Awake()
-    {
+    {        
         persistentQuestionList = Load();
         if (persistentQuestionList == null)
         {

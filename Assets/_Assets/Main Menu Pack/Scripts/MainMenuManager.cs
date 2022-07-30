@@ -96,6 +96,7 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
+        Application.targetFrameRate = 60;
         SetStartUI();
         ProcessLinks();
         SetStartVolume();

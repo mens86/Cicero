@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 [System.Serializable()]
 public struct SoundParameters
 {
@@ -9,25 +11,25 @@ public struct SoundParameters
     public float Volume;
     [Range(-3, 3)]
     public float Pitch;
-    public bool Loop;    
+    public bool Loop;
 }
 [System.Serializable()]
 
 public class Sound
 {
     [SerializeField] string name;
-    public string Name {get { return name; }  }
+    public string Name { get { return name; } }
 
     [SerializeField] AudioClip clip;
-    public AudioClip Clip {get { return clip; } } 
+    public AudioClip Clip { get { return clip; } }
 
     [SerializeField] SoundParameters parameters;
-    public SoundParameters Parameters {get { return parameters; } }
+    public SoundParameters Parameters { get { return parameters; } }
 
     [HideInInspector]
     public AudioSource Source;
 
-    public void Play ()
+    public void Play()
     {
         Source.clip = Clip;
 
@@ -38,7 +40,7 @@ public class Sound
         Source.Play();
 
     }
-    public void Stop ()
+    public void Stop()
     {
         Source.Stop();
     }
@@ -68,7 +70,7 @@ public class AudioManager : MonoBehaviour
         InitSounds();
     }
 
-    void Start ()
+    void Start()
     {
         if (string.IsNullOrEmpty(startupTrack) != true)
         {
@@ -76,7 +78,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    void InitSounds ()
+    void InitSounds()
 
     {
         foreach (var sound in sounds)
@@ -89,7 +91,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlaySound (string name)
+    public void PlaySound(string name)
     {
         var sound = GetSound(name);
         if (sound != null)
@@ -102,7 +104,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StopSound (string name)
+    public void StopSound(string name)
     {
         var sound = GetSound(name);
         if (sound != null)
@@ -115,7 +117,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    Sound GetSound (string name)
+    Sound GetSound(string name)
     {
         foreach (var sound in sounds)
         {
