@@ -54,8 +54,6 @@ public class AudioManager : MonoBehaviour
     [SerializeField] Sound[] sounds;
     [SerializeField] AudioSource sourcePrefab;
 
-    [SerializeField] string startupTrack;
-
     void Awake()
     {
         if (Instance != null)
@@ -68,14 +66,6 @@ public class AudioManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
         InitSounds();
-    }
-
-    void Start()
-    {
-        if (string.IsNullOrEmpty(startupTrack) != true)
-        {
-            PlaySound(startupTrack);
-        }
     }
 
     void InitSounds()
@@ -117,7 +107,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    Sound GetSound(string name)
+    public Sound GetSound(string name)
     {
         foreach (var sound in sounds)
         {
@@ -131,4 +121,31 @@ public class AudioManager : MonoBehaviour
 
 
 
+    public IEnumerator FadeOut(string audioSourceName, float FadeTime)
+    {
+        var audioSourceSound = GetSound(audioSourceName);
+        if (audioSourceSound != null)
+        {
+            float startVolume = audioSourceSound.Source.volume;
+
+            while (audioSourceSound.Source.volume > 0)
+            {
+                audioSourceSound.Source.volume -= startVolume * Time.deltaTime / FadeTime;
+
+                yield return null;
+            }
+
+            audioSourceSound.Source.Stop();
+            audioSourceSound.Source.volume = startVolume;
+        }
+        else
+        {
+            Debug.Log("controlla se hai scritto giusto il nome della traccia");
+        }
+    }
+
+
 }
+
+
+

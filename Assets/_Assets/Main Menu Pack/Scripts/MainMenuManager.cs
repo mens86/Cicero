@@ -51,9 +51,6 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("Audio")]
     [Space(10)][SerializeField] float defaultVolume = 0.8f;
-    [SerializeField] AudioClip uiClick;
-    [SerializeField] AudioClip uiHover;
-    [SerializeField] AudioClip uiSpecial;
 
 
     // Components
@@ -87,8 +84,9 @@ public class MainMenuManager : MonoBehaviour
     [Space(10)][SerializeField] Slider volumeSlider;
     [SerializeField] TMP_Dropdown resolutionDropdown;
 
-    [Header("Audio")]
-    [SerializeField] AudioSource audioSource;
+
+
+
 
     Resolution[] resolutions;
 
@@ -97,6 +95,7 @@ public class MainMenuManager : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
+        AudioManager.Instance.PlaySound("MenuMusic");
         SetStartUI();
         ProcessLinks();
         SetStartVolume();
@@ -235,9 +234,14 @@ public class MainMenuManager : MonoBehaviour
     #region Levels
     public void LoadLevel()
     {
-        // Fade Animation
-        fadeAnimator.SetTrigger("FadeOut");
 
+        // Fade Animation
+        AudioManager.Instance.PlaySound("PlayGameButtonSFX");
+        fadeAnimator.SetTrigger("FadeOut");
+        AudioManager.Instance.PlaySound("GameMusic");
+        //fade MenuMusic
+        AudioManager audioManager = (AudioManager)FindObjectOfType(typeof(AudioManager));
+        audioManager.StartCoroutine(audioManager.FadeOut("MenuMusic", 2f));
         StartCoroutine(WaitToLoadLevel());
     }
 
@@ -285,20 +289,7 @@ public class MainMenuManager : MonoBehaviour
         volumeSlider.value = PlayerPrefs.GetFloat("Volume");
     }
 
-    public void UIClick()
-    {
-        audioSource.PlayOneShot(uiClick);
-    }
 
-    public void UIHover()
-    {
-        audioSource.PlayOneShot(uiHover);
-    }
-
-    public void UISpecial()
-    {
-        audioSource.PlayOneShot(uiSpecial);
-    }
 
     #endregion
 

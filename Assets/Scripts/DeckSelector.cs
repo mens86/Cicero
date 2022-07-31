@@ -50,6 +50,7 @@ public class DeckSelector : MonoBehaviour
 
     void Start()
     {
+
         ShowCategories();
         LoadPreferences();
     }

@@ -52,7 +52,8 @@ public class MainMenuEditor : Editor
     private SerializedProperty fadeAnimator;
     private SerializedProperty volumeSlider;
     private SerializedProperty resolutionDropdown;
-    private SerializedProperty audioSource;
+
+
     #endregion
 
     #region Private
@@ -120,7 +121,9 @@ public class MainMenuEditor : Editor
         fadeAnimator = soTarget.FindProperty("fadeAnimator");
         volumeSlider = soTarget.FindProperty("volumeSlider");
         resolutionDropdown = soTarget.FindProperty("resolutionDropdown");
-        audioSource = soTarget.FindProperty("audioSource");
+
+
+
         #endregion
     }
 
@@ -208,10 +211,6 @@ public class MainMenuEditor : Editor
         EditorGUILayout.PropertyField(defaultVolume);
         EditorGUILayout.HelpBox("Default volume for the AudioListener. Volume is saved in PlayerPrefs.", MessageType.None);
 
-        EditorGUILayout.PropertyField(uiClick);
-        EditorGUILayout.PropertyField(uiHover);
-        EditorGUILayout.PropertyField(uiSpecial);
-        EditorGUILayout.HelpBox("Sounds when buttons are clicked or hovered", MessageType.None);
     }
 
     private void Components()
@@ -244,6 +243,6 @@ public class MainMenuEditor : Editor
         EditorGUILayout.PropertyField(volumeSlider);
         EditorGUILayout.PropertyField(resolutionDropdown);
 
-        EditorGUILayout.PropertyField(audioSource);
+
     }
 }
